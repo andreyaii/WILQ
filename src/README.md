@@ -21,11 +21,11 @@ View available consultation schedules.
 Book an available consultation slot.
 Monitor their queue position and estimated waiting time.
 Receive updated queue information when schedules change.
- - 2. NAS Moderator
+ - NAS Moderator
 View the centralized consultation queue.
 Review and remove invalid, duplicate, or troll bookings.
 Monitor bookings and queue information.
- - 3. Instructor / Consultation Facilitator
+ - Instructor / Consultation Facilitator
 Manage consultation sessions.
 Start, pause, resume, and end consultations.
 Allow the system to update queue information when session schedules change.
