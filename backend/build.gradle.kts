@@ -22,6 +22,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.0")
+	// Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
+	implementation("org.springframework.boot:spring-boot-starter-security:4.1.2")
 	// Source: https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
 	implementation("io.jsonwebtoken:jjwt:0.13.0")
 
