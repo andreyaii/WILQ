@@ -1,16 +1,15 @@
-
-import { useNavigate } from 'react-router-dom'
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 
 type IconName =
-    | 'file'
-    | 'clock'
-    | 'check'
-    | 'trend'
-    | 'calendar'
-    | 'user'
-    | 'arrow'
-    | 'info'
+    | "file"
+    | "clock"
+    | "check"
+    | "trend"
+    | "calendar"
+    | "user"
+    | "arrow"
+    | "info";
 
 const paths: Record<IconName, ReactNode> = {
     file: (
@@ -51,15 +50,9 @@ const paths: Record<IconName, ReactNode> = {
             <path d="M12 11v5M12 8h.01" />
         </>
     ),
-}
+};
 
-function Icon({
-                  name,
-                  size = 20,
-              }: {
-    name: IconName
-    size?: number
-}) {
+function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
     return (
         <svg
             width={size}
@@ -74,19 +67,19 @@ function Icon({
         >
             {paths[name]}
         </svg>
-    )
+    );
 }
 
 function PageHeader({
-                        eyebrow,
-                        title,
-                        description,
-                        action,
-                    }: {
-    eyebrow?: string
-    title: string
-    description: string
-    action?: ReactNode
+    eyebrow,
+    title,
+    description,
+    action,
+}: {
+    eyebrow?: string;
+    title: string;
+    description: string;
+    action?: ReactNode;
 }) {
     return (
         <div className="page-header">
@@ -98,7 +91,7 @@ function PageHeader({
 
             {action}
         </div>
-    )
+    );
 }
 
 function StatusBadge({ status }: { status: string }) {
@@ -107,15 +100,14 @@ function StatusBadge({ status }: { status: string }) {
             <i />
             {status}
         </span>
-    )
+    );
 }
 
 export default function Dashboard() {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     return (
         <main className="dashboard-page">
-
             <PageHeader
                 eyebrow="Tuesday, May 20"
                 title="Good morning, Group Pixel"
@@ -123,7 +115,7 @@ export default function Dashboard() {
                 action={
                     <button
                         className="primary-button"
-                        onClick={() => navigate('/student/slots')}
+                        onClick={() => navigate("/student/slots")}
                     >
                         <Icon name="calendar" size={18} />
                         Book a consultation
@@ -132,28 +124,27 @@ export default function Dashboard() {
             />
 
             <section className="stats-grid">
-
                 {[
                     {
-                        label: 'Total bookings',
-                        value: '08',
-                        note: 'This academic year',
-                        icon: 'file' as IconName,
-                        tone: 'blue',
+                        label: "Total bookings",
+                        value: "08",
+                        note: "This academic year",
+                        icon: "file" as IconName,
+                        tone: "blue",
                     },
                     {
-                        label: 'Pending review',
-                        value: '01',
-                        note: 'Awaiting confirmation',
-                        icon: 'clock' as IconName,
-                        tone: 'amber',
+                        label: "Pending review",
+                        value: "01",
+                        note: "Awaiting confirmation",
+                        icon: "clock" as IconName,
+                        tone: "amber",
                     },
                     {
-                        label: 'Approved',
-                        value: '05',
-                        note: 'Ready or completed',
-                        icon: 'check' as IconName,
-                        tone: 'green',
+                        label: "Approved",
+                        value: "05",
+                        note: "Ready or completed",
+                        icon: "check" as IconName,
+                        tone: "green",
                     },
                 ].map((stat) => (
                     <article className="stat-card" key={stat.label}>
@@ -180,13 +171,10 @@ export default function Dashboard() {
                         <small>7 of 8 consultations</small>
                     </div>
                 </article>
-
             </section>
 
             <section className="dashboard-grid">
-
                 <article className="panel upcoming-panel">
-
                     <div className="panel-heading">
                         <div>
                             <span className="eyebrow">Next consultation</span>
@@ -197,7 +185,6 @@ export default function Dashboard() {
                     </div>
 
                     <div className="schedule-block">
-
                         <div className="date-tile">
                             <span>MAY</span>
                             <strong>22</strong>
@@ -219,11 +206,9 @@ export default function Dashboard() {
                                 Prof. Elena Reyes
                             </p>
                         </div>
-
                     </div>
 
                     <div className="queue-strip">
-
                         <div>
                             <span>Your queue number</span>
                             <strong>#03</strong>
@@ -242,11 +227,9 @@ export default function Dashboard() {
                                 <i />
                             </div>
                         </div>
-
                     </div>
 
                     <div className="panel-footer">
-
                         <span>
                             <Icon name="info" size={16} />
                             Queue updates will appear here on consultation day.
@@ -255,19 +238,16 @@ export default function Dashboard() {
                         <button
                             className="text-button"
                             onClick={() =>
-                                navigate('/student/bookings/CS-2025-041')
+                                navigate("/student/bookings/CS-2025-041")
                             }
                         >
                             View details
                             <Icon name="arrow" size={16} />
                         </button>
-
                     </div>
-
                 </article>
 
                 <article className="panel activity-panel">
-
                     <div className="panel-heading">
                         <div>
                             <span className="eyebrow">Latest updates</span>
@@ -276,14 +256,13 @@ export default function Dashboard() {
 
                         <button
                             className="text-button"
-                            onClick={() => navigate('/student/bookings')}
+                            onClick={() => navigate("/student/bookings")}
                         >
                             View all
                         </button>
                     </div>
 
                     <div className="activity-list">
-
                         <div className="activity-item">
                             <div className="activity-dot green">
                                 <Icon name="check" size={16} />
@@ -305,9 +284,7 @@ export default function Dashboard() {
 
                             <div>
                                 <strong>Booking submitted</strong>
-                                <p>
-                                    Reference CS-2025-038 is under review.
-                                </p>
+                                <p>Reference CS-2025-038 is under review.</p>
                                 <span>May 16, 2025</span>
                             </div>
                         </div>
@@ -319,19 +296,13 @@ export default function Dashboard() {
 
                             <div>
                                 <strong>Consultation completed</strong>
-                                <p>
-                                    System requirements review was completed.
-                                </p>
+                                <p>System requirements review was completed.</p>
                                 <span>May 8, 2025</span>
                             </div>
                         </div>
-
                     </div>
-
                 </article>
-
             </section>
-
         </main>
-    )
+    );
 }

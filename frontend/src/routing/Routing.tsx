@@ -1,29 +1,26 @@
-
-import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
-import { useState } from 'react'
-
-import Landing from '../pages/Landing'
-import Dashboard from '../pages/Dashboard'
-
+import { useState } from "react";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import {
+    type Route as AppRoute,
     StudentSidebar,
     StudentTopbar,
-    type Route as AppRoute
-} from '../components/Navbar'
+} from "../components/Navbar";
+import Dashboard from "../pages/Dashboard";
+import Landing from "../pages/Landing";
 
-import ScrollToTop from './ScrollToTop'
+import ScrollToTop from "./ScrollToTop";
 
 export default function Routing() {
-    const navigate = useNavigate()
-    const location = useLocation()
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    const [mobileOpen, setMobileOpen] = useState(false)
+    const [mobileOpen, setMobileOpen] = useState(false);
 
-    const isStudentPage = location.pathname.startsWith('/student')
+    const isStudentPage = location.pathname.startsWith("/student");
 
     const handleNavigate = (path: AppRoute) => {
-        navigate(path)
-    }
+        navigate(path);
+    };
 
     return (
         <>
@@ -31,7 +28,6 @@ export default function Routing() {
 
             {isStudentPage ? (
                 <div className="student-layout">
-
                     <StudentSidebar
                         route={location.pathname as AppRoute}
                         navigate={handleNavigate}
@@ -40,10 +36,7 @@ export default function Routing() {
                     />
 
                     <div className="student-main">
-
-                        <StudentTopbar
-                            onOpen={() => setMobileOpen(true)}
-                        />
+                        <StudentTopbar onOpen={() => setMobileOpen(true)} />
 
                         <div className="student-content">
                             <Routes>
@@ -53,9 +46,7 @@ export default function Routing() {
                                 />
                             </Routes>
                         </div>
-
                     </div>
-
                 </div>
             ) : (
                 <Routes>
@@ -63,14 +54,12 @@ export default function Routing() {
                         path="/"
                         element={
                             <Landing
-                                onLogin={() =>
-                                    navigate('/student/dashboard')
-                                }
+                                onLogin={() => navigate("/student/dashboard")}
                             />
                         }
                     />
                 </Routes>
             )}
         </>
-    )
+    );
 }

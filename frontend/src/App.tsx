@@ -1,5 +1,5 @@
-import Routing from './routing/Routing'
+import Routing from "./routing/Routing";
 
 export default function App() {
-    return <Routing />
+    return <Routing />;
 }
