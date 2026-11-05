@@ -1,4 +1,4 @@
-import { type FormEvent, type ReactNode, useState } from "react";
+import { type ReactNode, type SubmitEvent, useState } from "react";
 
 type LandingProps = {
     onLogin: () => void;
@@ -86,7 +86,7 @@ export default function Landing({ onLogin }: LandingProps) {
     const [showPassword, setShowPassword] = useState(false);
     const [mode, setMode] = useState<"login" | "signup">("login");
 
-    const submit = (event: FormEvent<HTMLFormElement>) => {
+    const submit = (event: SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
         onLogin();
     };
