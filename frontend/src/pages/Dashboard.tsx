@@ -22,7 +22,11 @@ export default function Dashboard() {
     const upcoming = useMemo(() => activeBookings
         .map((booking) => ({ booking, slot: getSlot(booking.slotId) }))
         .filter((item) => item.slot && new Date(item.slot.date + "T" + item.slot.startTime + ":00").getTime() > Date.now())
-        .sort((a, b) => (a.slot?.date + a.slot?.startTime).localeCompare(b.slot?.date + b.slot?.startTime))[0],
+        .sort((a, b) => {
+            const left = String(a.slot?.date ?? "") + String(a.slot?.startTime ?? "");
+            const right = String(b.slot?.date ?? "") + String(b.slot?.startTime ?? "");
+            return left.localeCompare(right);
+        })[0],
     [bookings, slots]);
 
     const availableCount = slots.filter((slot) =>
