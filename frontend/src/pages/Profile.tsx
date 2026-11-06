@@ -82,7 +82,7 @@ export default function Profile() {
                             </label>
                         </div>
                         {error && <div className="form-error profile-message" role="alert"><Icon name="info" size={16} />{error}</div>}
-                        {saved && <div className="form-success profile-message" role="status"><Icon name="check" size={16} />Profile changes saved in this browser.</div>}
+                        {saved && <div className="form-success profile-message" role="status"><Icon name="check" size={16} />Changes saved.</div>}
                         <div className="profile-footer">
                             <p><Icon name="shield" size={15} />Only the fields above are editable in this preview.</p>
                             <button className="primary-button" type="submit"><Icon name="check" size={16} />Save changes</button>
