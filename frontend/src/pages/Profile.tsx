@@ -66,7 +66,10 @@ export default function Profile() {
                                 <div><Icon name="users" size={16} /><input id="profile-group" value={draft.groupName} onChange={(event) => update("groupName", event.target.value)} required maxLength={80} /></div>
                             </label>
                             <label htmlFor="profile-group-code">Group code
-                                <div><Icon name="hash" size={16} /><input id="profile-group-code" value={draft.groupCode} onChange={(event) => update("groupCode", event.target.value)} maxLength={60} /></div>
+                                <div className="readonly-field" title="Group code cannot be edited">
+                                    <Icon name="hash" size={16} />
+                                    <input id="profile-group-code" value={draft.groupCode} readOnly tabIndex={-1} />
+                                </div>
                             </label>
                             <label htmlFor="profile-program">Program *
                                 <div><Icon name="grid" size={16} /><input id="profile-program" value={draft.program} onChange={(event) => update("program", event.target.value)} required maxLength={40} /></div>

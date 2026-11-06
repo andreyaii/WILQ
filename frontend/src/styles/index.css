@@ -2576,6 +2576,9 @@ td span:not(.status) {
 .profile-message { margin: 0 23px 15px; }
 .profile-fields label > div { box-sizing: border-box; }
 .profile-fields label > div:focus-within { border-color: var(--mustard); box-shadow: 0 0 0 3px rgba(212,177,90,.15); }
+.profile-fields label > div.readonly-field { background: #f0f2f5; cursor: not-allowed; }
+.profile-fields label > div.readonly-field input { cursor: not-allowed; color: #667085; }
+.profile-fields label > div.readonly-field:focus-within { border-color: var(--line); box-shadow: none; }
 .profile-footer button:disabled, button:disabled { cursor: not-allowed; opacity: .55; }
 .small-avatar { width: 24px !important; height: 24px !important; display: inline-grid !important; font-size: 9px !important; }
 .activity-summary { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 4px; padding-top: 15px; border-top: 1px solid var(--line); }
