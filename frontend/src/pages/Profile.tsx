@@ -23,13 +23,14 @@ export default function Profile() {
     const submit = (event: SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
         const groupName = draft.groupName.trim();
+        const groupCode = draft.groupCode.trim();
         const program = draft.program.trim();
         const section = draft.section.trim();
         if (!groupName || !program || !section) {
             setError("Group name, program, and section are required.");
             return;
         }
-        updateProfile({ ...draft, groupName, program, section });
+        updateProfile({ ...draft, groupName, groupCode, program, section });
         setSaved(true);
         setError("");
     };
@@ -46,7 +47,7 @@ export default function Profile() {
 
             <div className="notice-banner">
                 <Icon name="info" size={17} />
-                <span>Profile changes are stored in this browser preview only and are not sent to the NAS office.</span>
+                <span>Profile changes are stored in this browser preview only and are not sent to the WIL office.</span>
             </div>
 
             <div className="profile-layout">
@@ -55,7 +56,7 @@ export default function Profile() {
                         <div className="avatar large">{getInitials(draft.groupName)}</div>
                         <div>
                             <h2>{draft.groupName || "Your group"}</h2>
-                            <p>{draft.program || "Program not set"} · {draft.section || "Section not set"}</p>
+                            <p>{draft.program || "Program not set"} · {draft.section || "Section not set"} · {draft.groupCode || "2526-sem2-cs342-01"}</p>
                             <span><i /> Student group workspace</span>
                         </div>
                     </div>
@@ -63,6 +64,9 @@ export default function Profile() {
                         <div className="profile-fields">
                             <label htmlFor="profile-group">Group name *
                                 <div><Icon name="users" size={16} /><input id="profile-group" value={draft.groupName} onChange={(event) => update("groupName", event.target.value)} required maxLength={80} /></div>
+                            </label>
+                            <label htmlFor="profile-group-code">Group code
+                                <div><Icon name="hash" size={16} /><input id="profile-group-code" value={draft.groupCode} onChange={(event) => update("groupCode", event.target.value)} maxLength={60} /></div>
                             </label>
                             <label htmlFor="profile-program">Program *
                                 <div><Icon name="grid" size={16} /><input id="profile-program" value={draft.program} onChange={(event) => update("program", event.target.value)} required maxLength={40} /></div>
@@ -75,9 +79,6 @@ export default function Profile() {
                             </label>
                             <label htmlFor="profile-email">Contact email
                                 <div><Icon name="mail" size={16} /><input id="profile-email" type="email" value={draft.email} onChange={(event) => update("email", event.target.value)} maxLength={160} placeholder="name@example.com" /></div>
-                            </label>
-                            <label htmlFor="profile-phone">Contact number
-                                <div><Icon name="user" size={16} /><input id="profile-phone" type="tel" value={draft.contactNumber} onChange={(event) => update("contactNumber", event.target.value)} maxLength={30} placeholder="Optional contact number" /></div>
                             </label>
                         </div>
                         {error && <div className="form-error profile-message" role="alert"><Icon name="info" size={16} />{error}</div>}

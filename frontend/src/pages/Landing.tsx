@@ -216,7 +216,7 @@ export default function Landing({ onLogin }: LandingProps) {
 
                     <div className="landing-support">
                         <span>Need help accessing your group account?</span>
-                        <button type="button">Contact the NAS office</button>
+                        <button type="button">Contact the WIL office</button>
                     </div>
                 </section>
             </main>

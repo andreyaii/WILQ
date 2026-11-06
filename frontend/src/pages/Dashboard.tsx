@@ -27,7 +27,7 @@ export default function Dashboard() {
             const right = String(b.slot?.date ?? "") + String(b.slot?.startTime ?? "");
             return left.localeCompare(right);
         })[0],
-    [bookings, slots]);
+        [bookings, slots]);
 
     const availableCount = slots.filter((slot) =>
         new Date(slot.date + "T" + slot.startTime + ":00").getTime() > Date.now()
@@ -129,12 +129,12 @@ export default function Dashboard() {
                             const title = booking.status === "Pending"
                                 ? "Booking submitted"
                                 : booking.status === "Approved"
-                                  ? "Booking approved"
-                                  : booking.status === "Completed"
-                                    ? "Consultation completed"
-                                    : booking.status === "Cancelled"
-                                      ? "Booking cancelled"
-                                      : "Booking rejected";
+                                    ? "Booking approved"
+                                    : booking.status === "Completed"
+                                        ? "Consultation completed"
+                                        : booking.status === "Cancelled"
+                                            ? "Booking cancelled"
+                                            : "Booking rejected";
                             return (
                                 <div className="activity-item" key={booking.reference}>
                                     <div className={"activity-dot " + (isCompleted ? "green" : isCancelled ? "gray" : "blue")}><Icon name={isCancelled ? "info" : isCompleted || booking.status === "Approved" ? "check" : "file"} size={16} /></div>
@@ -162,7 +162,6 @@ export default function Dashboard() {
                     </div>
                 </article>
             </section>
-            <p className="workspace-disclaimer">Workspace preview only. Booking data is saved in this browser and is not synced to the live NAS schedule.</p>
         </main>
     );
 }

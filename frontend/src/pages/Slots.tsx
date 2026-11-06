@@ -54,6 +54,12 @@ export default function Slots() {
             getRemainingSeats(slot) > 0,
     );
 
+    const dateSlots = slots
+        .filter((slot) => slot.date === selectedDate)
+        .sort((a, b) => a.startTime.localeCompare(b.startTime));
+    const morningSlots = dateSlots.filter((slot) => slot.startTime < "12:00");
+    const afternoonSlots = dateSlots.filter((slot) => slot.startTime >= "12:00");
+
     const dateLabel = (date: string) => ({
         weekday: new Date(date + "T00:00:00").toLocaleDateString("en-PH", {
             weekday: "short",
@@ -85,7 +91,7 @@ export default function Slots() {
             <div className="notice-banner">
                 <Icon name="info" size={17} />
                 <span>
-                    Preview schedule: selections and bookings save in this browser. They are not yet sent to a live NAS schedule.
+                    Consultation Guidelines: Please book at least 24 hours in advance and arrive at the WIL office 5 minutes before your scheduled slot with your capstone materials ready.
                 </span>
             </div>
 
@@ -162,31 +168,57 @@ export default function Slots() {
                     )}
 
                     {slotsForDate.length > 0 ? (
-                        <div className="time-grid">
-                            {slots
-                                .filter((slot) => slot.date === selectedDate)
-                                .sort((a, b) => a.startTime.localeCompare(b.startTime))
-                                .map((slot) => {
-                                    const remaining = getRemainingSeats(slot);
-                                    const disabled = remaining < 1 || slotHasPassed(slot) || Boolean(activeBooking);
-                                    return (
-                                        <button
-                                            type="button"
-                                            key={slot.id}
-                                            className={selectedSlotId === slot.id ? "selected" : ""}
-                                            disabled={disabled}
-                                            aria-pressed={selectedSlotId === slot.id}
-                                            onClick={() => setSelectedSlotId(slot.id)}
-                                        >
-                                            <Icon name="clock" size={16} />
-                                            <span className="slot-time-label">
-                                                <strong>{formatTime(slot.startTime)}</strong>
-                                                <small>{remaining} seat{remaining === 1 ? "" : "s"} left</small>
-                                            </span>
-                                            {selectedSlotId === slot.id && <Icon name="check" size={16} />}
-                                        </button>
-                                    );
-                                })}
+                        <div className="slot-columns">
+                            <div className="slot-column">
+                                <div className="slot-column-header">Morning</div>
+                                <div className="slot-vertical-list">
+                                    {morningSlots.map((slot) => {
+                                        const remaining = getRemainingSeats(slot);
+                                        const disabled = remaining < 1 || slotHasPassed(slot) || Boolean(activeBooking);
+                                        return (
+                                            <button
+                                                type="button"
+                                                key={slot.id}
+                                                className={selectedSlotId === slot.id ? "selected" : ""}
+                                                disabled={disabled}
+                                                aria-pressed={selectedSlotId === slot.id}
+                                                onClick={() => setSelectedSlotId(slot.id)}
+                                            >
+                                                <Icon name="clock" size={16} />
+                                                <span className="slot-time-label">
+                                                    <strong>{formatTime(slot.startTime)}</strong>
+                                                </span>
+                                                {selectedSlotId === slot.id && <Icon name="check" size={16} />}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                            <div className="slot-column">
+                                <div className="slot-column-header">Afternoon</div>
+                                <div className="slot-vertical-list">
+                                    {afternoonSlots.map((slot) => {
+                                        const remaining = getRemainingSeats(slot);
+                                        const disabled = remaining < 1 || slotHasPassed(slot) || Boolean(activeBooking);
+                                        return (
+                                            <button
+                                                type="button"
+                                                key={slot.id}
+                                                className={selectedSlotId === slot.id ? "selected" : ""}
+                                                disabled={disabled}
+                                                aria-pressed={selectedSlotId === slot.id}
+                                                onClick={() => setSelectedSlotId(slot.id)}
+                                            >
+                                                <Icon name="clock" size={16} />
+                                                <span className="slot-time-label">
+                                                    <strong>{formatTime(slot.startTime)}</strong>
+                                                </span>
+                                                {selectedSlotId === slot.id && <Icon name="check" size={16} />}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
                         </div>
                     ) : (
                         <div className="inline-empty">
@@ -228,10 +260,6 @@ export default function Slots() {
                                 <div>
                                     <Icon name="grid" size={17} />
                                     <span>Location<strong>{selectedSlot.location}</strong></span>
-                                </div>
-                                <div>
-                                    <Icon name="users" size={17} />
-                                    <span>Availability<strong>{getRemainingSeats(selectedSlot)} seat(s) remaining</strong></span>
                                 </div>
                             </div>
                             <button

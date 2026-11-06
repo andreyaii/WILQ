@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import { Icon } from "../components/Icon";
 import {
@@ -9,6 +9,7 @@ import {
 } from "../context/StudentDataContext";
 
 type FilterStatus = "All" | "Pending" | "Approved" | "Completed" | "Cancelled";
+const PAGE_SIZE = 6;
 
 function StatusBadge({ status }: { status: BookingStatus }) {
     return <span className={"status status-" + status.toLowerCase()}><i />{status}</span>;
@@ -19,6 +20,7 @@ export default function Bookings() {
     const { bookings, getSlot } = useStudentData();
     const [filter, setFilter] = useState<FilterStatus>("All");
     const [query, setQuery] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
 
     const filtered = useMemo(() => {
         const normalized = query.trim().toLowerCase();
@@ -39,6 +41,16 @@ export default function Bookings() {
             })
             .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     }, [bookings, filter, query, getSlot]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [filter, query]);
+
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    const paginatedBookings = filtered.slice(startIndex, startIndex + PAGE_SIZE);
+    const displayedStart = filtered.length === 0 ? 0 : startIndex + 1;
+    const displayedEnd = Math.min(startIndex + PAGE_SIZE, filtered.length);
 
     const countFor = (value: FilterStatus) =>
         value === "All"
@@ -101,12 +113,12 @@ export default function Bookings() {
                                         <th>Consultation</th>
                                         <th>Date &amp; time</th>
                                         <th>Facilitator</th>
-                                        <th>Status</th>
+                                        <th className="status-col">Booking status</th>
                                         <th>Details</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filtered.map((booking) => {
+                                    {paginatedBookings.map((booking) => {
                                         const slot = getSlot(booking.slotId);
                                         return (
                                             <tr key={booking.reference}>
@@ -123,7 +135,7 @@ export default function Bookings() {
                                                     <span>{slot ? formatTime(slot.startTime) + " – " + formatTime(slot.endTime) : "Check support details"}</span>
                                                 </td>
                                                 <td><strong>{slot?.instructor ?? "Not assigned"}</strong><span>{slot?.location ?? ""}</span></td>
-                                                <td><StatusBadge status={booking.status} /></td>
+                                                <td className="status-cell"><StatusBadge status={booking.status} /></td>
                                                 <td>
                                                     <button className="view-button" type="button" onClick={() => navigate("/student/bookings/" + booking.reference)}>
                                                         View details <Icon name="arrow" size={14} />
@@ -136,11 +148,36 @@ export default function Bookings() {
                             </table>
                         </div>
                         <div className="table-footer">
-                            <span>Showing {filtered.length} of {bookings.length} booking{bookings.length === 1 ? "" : "s"}</span>
-                            <button type="button" aria-label="Refresh bookings" onClick={() => {
-                                setQuery("");
-                                setFilter("All");
-                            }}><Icon name="check" size={14} /></button>
+                            <span>Showing {displayedStart}–{displayedEnd} of {filtered.length} booking{filtered.length === 1 ? "" : "s"}</span>
+                            <div className="pagination-controls">
+                                <button
+                                    type="button"
+                                    aria-label="Previous page"
+                                    disabled={currentPage === 1}
+                                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                                >
+                                    ‹
+                                </button>
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                    <button
+                                        key={page}
+                                        type="button"
+                                        className={currentPage === page ? "active" : ""}
+                                        onClick={() => setCurrentPage(page)}
+                                        aria-current={currentPage === page ? "page" : undefined}
+                                    >
+                                        {page}
+                                    </button>
+                                ))}
+                                <button
+                                    type="button"
+                                    aria-label="Next page"
+                                    disabled={currentPage === totalPages}
+                                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                                >
+                                    ›
+                                </button>
+                            </div>
                         </div>
                     </>
                 ) : (

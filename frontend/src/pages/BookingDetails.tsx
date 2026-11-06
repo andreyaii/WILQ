@@ -106,7 +106,7 @@ export default function BookingDetails() {
                             <div><span>Date</span><strong>{slot ? formatDate(slot.date) : "Not available"}</strong></div>
                             <div><span>Time</span><strong>{slot ? formatTime(slot.startTime) + " – " + formatTime(slot.endTime) : "Not available"}</strong></div>
                             <div><span>Facilitator</span><strong>{slot?.instructor ?? "Not assigned"}</strong></div>
-                            <div><span>Location</span><strong>{slot?.location ?? "Check with NAS"}</strong></div>
+                            <div><span>Location</span><strong>{slot?.location ?? "Check with WIL"}</strong></div>
                             <div><span>Submitted</span><strong>{timestamp(booking.createdAt)}</strong></div>
                             <div><span>Last updated</span><strong>{timestamp(booking.updatedAt)}</strong></div>
                         </div>

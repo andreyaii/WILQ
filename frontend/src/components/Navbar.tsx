@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { getInitials, useStudentData } from "../context/StudentDataContext";
 import Brand from "./Brand";
 import { Icon, type IconName } from "./Icon";
@@ -93,16 +94,49 @@ export function StudentSidebar({
     );
 }
 
+const sampleNotifications = [
+    {
+        id: "notif-1",
+        title: "Session Rescheduled",
+        message: "Your instructor has paused the consultation session. Your booking is moved to 2:30 PM.",
+        time: "10 mins ago",
+        unread: true,
+    },
+    {
+        id: "notif-2",
+        title: "Queue Notification",
+        message: "Consultation queue is now active. Please be prepared when your reference number is called.",
+        time: "1 hour ago",
+        unread: false,
+    },
+];
+
 export function StudentTopbar({
     onOpen,
-    navigate,
+    navigate: _navigate,
 }: {
     onOpen: () => void;
     navigate: (route: Route) => void;
 }) {
     const { profile } = useStudentData();
+    const [notificationsOpen, setNotificationsOpen] = useState(false);
+    const notifRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+                setNotificationsOpen(false);
+            }
+        }
+        if (notificationsOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+            return () => document.removeEventListener("mousedown", handleClickOutside);
+        }
+    }, [notificationsOpen]);
+
     const groupName = profile.groupName.trim() || "Student group";
-    const groupSubtitle = [profile.program, profile.section].filter(Boolean).join(" ") || "View profile";
+    const groupSubtitle = [profile.program, profile.section].filter(Boolean).join(" ") || "Student group";
+
     return (
         <header className="topbar">
             <button className="icon-button menu-button" type="button" onClick={onOpen} aria-label="Open menu">
@@ -113,15 +147,53 @@ export function StudentTopbar({
                 <strong>Consultation booking and queue</strong>
             </div>
             <div className="top-actions">
-                <button className="notification" type="button" aria-label="View support details" onClick={() => navigate("/student/support")}>
-                    <Icon name="bell" />
-                </button>
+                <div className="notification-wrapper" ref={notifRef}>
+                    <button
+                        className={"notification " + (notificationsOpen ? "active" : "")}
+                        type="button"
+                        aria-label="View notifications"
+                        aria-expanded={notificationsOpen}
+                        onClick={() => setNotificationsOpen((prev) => !prev)}
+                    >
+                        <Icon name="bell" />
+                        <span className="notif-dot" />
+                    </button>
+                    {notificationsOpen && (
+                        <div className="notification-popup" role="dialog" aria-label="Notifications">
+                            <div className="notification-header">
+                                <strong>Notifications</strong>
+                                <span className="notification-badge">1 unread</span>
+                            </div>
+                            <div className="notification-list">
+                                {sampleNotifications.map((notif) => (
+                                    <div
+                                        key={notif.id}
+                                        className={"notification-item " + (notif.unread ? "unread" : "")}
+                                    >
+                                        <div className="notification-item-dot" />
+                                        <div className="notification-item-content">
+                                            <div className="notification-item-header">
+                                                <strong>{notif.title}</strong>
+                                                <small>{notif.time}</small>
+                                            </div>
+                                            <p>{notif.message}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="notification-footer">
+                                <button type="button" onClick={() => setNotificationsOpen(false)}>
+                                    Dismiss
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
                 <div className="top-divider" />
-                <button className="top-profile top-profile-button" type="button" onClick={() => navigate("/student/profile")} aria-label="Open group profile">
+                <div className="top-profile">
                     <div className="avatar">{getInitials(groupName)}</div>
                     <div><strong>{groupName}</strong><span>{groupSubtitle}</span></div>
-                    <Icon name="chevron" size={16} />
-                </button>
+                </div>
             </div>
         </header>
     );

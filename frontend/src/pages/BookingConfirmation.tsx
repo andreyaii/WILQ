@@ -82,7 +82,6 @@ export default function BookingConfirmation() {
                         <div className="detail-grid">
                             <div><span>Facilitator</span><strong>{slot.instructor}</strong></div>
                             <div><span>Location</span><strong>{slot.location}</strong></div>
-                            <div><span>Available seats</span><strong>{getRemainingSeats(slot)}</strong></div>
                             <div><span>Initial status</span><strong>Pending review</strong></div>
                         </div>
 
@@ -134,10 +133,6 @@ export default function BookingConfirmation() {
                             <li>Your booking will appear under My Bookings with a reference number.</li>
                             <li>Pending bookings may require review before the consultation is confirmed.</li>
                         </ul>
-                        <div className="availability-note">
-                            <Icon name="shield" size={16} />
-                            <span>This preview saves bookings in this browser only. It does not notify the NAS office.</span>
-                        </div>
                     </aside>
                 </div>
             )}

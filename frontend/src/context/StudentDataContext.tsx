@@ -7,7 +7,8 @@ import {
     type ReactNode,
 } from "react";
 
-const STORAGE_KEY = "wilq.student-workspace.v1";
+const STORAGE_KEY = "wilq.student-workspace.v2";
+const LEGACY_STORAGE_KEY = "wilq.student-workspace.v1";
 
 export type BookingStatus =
     | "Pending"
@@ -40,6 +41,7 @@ export type Booking = {
 
 export type StudentProfile = {
     groupName: string;
+    groupCode: string;
     program: string;
     section: string;
     representative: string;
@@ -91,10 +93,22 @@ function buildSampleSlots(): ConsultationSlot[] {
     }
 
     const times = [
-        { startTime: "09:00", endTime: "09:30" },
-        { startTime: "10:00", endTime: "10:30" },
-        { startTime: "13:30", endTime: "14:00" },
-        { startTime: "14:30", endTime: "15:00" },
+        { startTime: "07:30", endTime: "08:05" },
+        { startTime: "08:05", endTime: "08:40" },
+        { startTime: "08:40", endTime: "09:15" },
+        { startTime: "09:15", endTime: "09:50" },
+        { startTime: "09:50", endTime: "10:25" },
+        { startTime: "10:25", endTime: "11:00" },
+        { startTime: "11:00", endTime: "11:35" },
+        { startTime: "11:35", endTime: "12:10" },
+        { startTime: "13:20", endTime: "13:55" },
+        { startTime: "13:55", endTime: "14:30" },
+        { startTime: "14:30", endTime: "15:05" },
+        { startTime: "15:05", endTime: "15:40" },
+        { startTime: "15:40", endTime: "16:15" },
+        { startTime: "16:15", endTime: "16:50" },
+        { startTime: "16:50", endTime: "17:25" },
+        { startTime: "17:25", endTime: "18:00" },
     ];
 
     return businessDays.flatMap((date) =>
@@ -117,8 +131,9 @@ function defaultState(): WorkspaceState {
         bookings: [],
         profile: {
             groupName: "Group Pixel",
+            groupCode: "2526-sem2-cs342-01",
             program: "BSIT",
-            section: "3A",
+            section: "F1",
             representative: "",
             email: "",
             contactNumber: "",
@@ -156,16 +171,31 @@ function readStoredState(): WorkspaceState {
     }
 
     try {
-        const raw = window.localStorage.getItem(STORAGE_KEY);
+        let raw = window.localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+            raw = window.localStorage.getItem(LEGACY_STORAGE_KEY);
+        }
         if (!raw) {
             return fallback;
         }
 
         const parsed = JSON.parse(raw) as Partial<WorkspaceState>;
+        const rawSlots = Array.isArray(parsed.slots) ? parsed.slots : fallback.slots;
+        // If stored slots were from the old schedule (missing 07:30 morning slots), use fresh slots
+        const hasNewSlots = rawSlots.some((s) => s.startTime === "07:30");
+        const slots = hasNewSlots ? rawSlots : fallback.slots;
+
+        const profile: StudentProfile = {
+            ...fallback.profile,
+            ...(parsed.profile ?? {}),
+            groupCode: parsed.profile?.groupCode || "2526-sem2-cs342-01",
+            section: parsed.profile?.section === "3A" ? "F1" : (parsed.profile?.section || "F1"),
+        };
+
         const loaded: WorkspaceState = {
-            slots: Array.isArray(parsed.slots) ? parsed.slots : fallback.slots,
+            slots,
             bookings: Array.isArray(parsed.bookings) ? parsed.bookings : [],
-            profile: { ...fallback.profile, ...(parsed.profile ?? {}) },
+            profile,
         };
         return addUpcomingSlots(loaded);
     } catch {
