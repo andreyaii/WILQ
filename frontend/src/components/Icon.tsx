@@ -20,7 +20,8 @@ export type IconName =
     | "hash"
     | "mail"
     | "users"
-    | "shield";
+    | "shield"
+    | "search";
 
 const paths: Record<IconName, ReactNode> = {
     grid: (
@@ -117,6 +118,12 @@ const paths: Record<IconName, ReactNode> = {
         <>
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
             <path d="m9 12 2 2 4-4" />
+        </>
+    ),
+    search: (
+        <>
+            <circle cx="10.8" cy="10.8" r="6.8" />
+            <path d="m16 16 5 5" />
         </>
     ),
 };
