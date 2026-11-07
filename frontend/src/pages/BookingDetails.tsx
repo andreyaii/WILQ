@@ -2,14 +2,19 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { Icon } from "../components/Icon";
 import {
+    type BookingStatus,
     formatDate,
     formatTime,
-    type BookingStatus,
     useStudentData,
 } from "../context/StudentDataContext";
 
 function StatusBadge({ status }: { status: BookingStatus }) {
-    return <span className={"status status-" + status.toLowerCase()}><i />{status}</span>;
+    return (
+        <span className={"status status-" + status.toLowerCase()}>
+            <i />
+            {status}
+        </span>
+    );
 }
 
 function timestamp(value: string) {
@@ -38,20 +43,32 @@ export default function BookingDetails() {
                     <div>
                         <span className="eyebrow">Booking details</span>
                         <h1>Booking not found</h1>
-                        <p>This reference may not exist in the current browser workspace.</p>
+                        <p>
+                            This reference may not exist in the current browser
+                            workspace.
+                        </p>
                     </div>
                 </div>
                 <section className="panel empty-state page-empty">
-                    <div className="empty-state-icon"><Icon name="file" size={23} /></div>
+                    <div className="empty-state-icon">
+                        <Icon name="file" size={23} />
+                    </div>
                     <h2>We couldn’t find that booking</h2>
                     <p>Return to My Bookings to choose a valid reference.</p>
-                    <button className="primary-button" type="button" onClick={() => navigate("/student/bookings")}>Go to my bookings</button>
+                    <button
+                        className="primary-button"
+                        type="button"
+                        onClick={() => navigate("/student/bookings")}
+                    >
+                        Go to my bookings
+                    </button>
                 </section>
             </main>
         );
     }
 
-    const canCancel = booking.status === "Pending" || booking.status === "Approved";
+    const canCancel =
+        booking.status === "Pending" || booking.status === "Approved";
     const timelineLabel =
         booking.status === "Pending"
             ? "Awaiting review"
@@ -71,9 +88,15 @@ export default function BookingDetails() {
         }
         try {
             cancelBooking(booking.reference);
-            setMessage("Booking cancelled. Its slot is available for another group in this browser preview.");
+            setMessage(
+                "Booking cancelled. Its slot is available for another group in this browser preview.",
+            );
         } catch (reason) {
-            setError(reason instanceof Error ? reason.message : "The booking could not be cancelled.");
+            setError(
+                reason instanceof Error
+                    ? reason.message
+                    : "The booking could not be cancelled.",
+            );
         }
     };
 
@@ -81,11 +104,20 @@ export default function BookingDetails() {
         <main className="student-page">
             <div className="page-header detail-title">
                 <div>
-                    <span className="eyebrow">Booking reference · {booking.reference}</span>
+                    <span className="eyebrow">
+                        Booking reference · {booking.reference}
+                    </span>
                     <h1>Booking details</h1>
-                    <p>Review the consultation schedule and current booking status.</p>
+                    <p>
+                        Review the consultation schedule and current booking
+                        status.
+                    </p>
                 </div>
-                <button className="secondary-button" type="button" onClick={() => navigate("/student/bookings")}>
+                <button
+                    className="secondary-button"
+                    type="button"
+                    onClick={() => navigate("/student/bookings")}
+                >
                     <Icon name="arrow" size={16} />
                     Back to my bookings
                 </button>
@@ -95,20 +127,59 @@ export default function BookingDetails() {
                 <div>
                     <section className="panel booking-detail-card">
                         <div className="detail-card-heading">
-                            <div className="large-icon"><Icon name="calendar" size={22} /></div>
+                            <div className="large-icon">
+                                <Icon name="calendar" size={22} />
+                            </div>
                             <div>
                                 <h2>{booking.purpose}</h2>
-                                <p>{slot?.topic ?? "Consultation slot"} · {booking.reference}</p>
+                                <p>
+                                    {slot?.topic ?? "Consultation slot"} ·{" "}
+                                    {booking.reference}
+                                </p>
                             </div>
-                            <div className="detail-status"><StatusBadge status={booking.status} /></div>
+                            <div className="detail-status">
+                                <StatusBadge status={booking.status} />
+                            </div>
                         </div>
                         <div className="detail-grid compact">
-                            <div><span>Date</span><strong>{slot ? formatDate(slot.date) : "Not available"}</strong></div>
-                            <div><span>Time</span><strong>{slot ? formatTime(slot.startTime) + " – " + formatTime(slot.endTime) : "Not available"}</strong></div>
-                            <div><span>Facilitator</span><strong>{slot?.instructor ?? "Not assigned"}</strong></div>
-                            <div><span>Location</span><strong>{slot?.location ?? "Check with WIL"}</strong></div>
-                            <div><span>Submitted</span><strong>{timestamp(booking.createdAt)}</strong></div>
-                            <div><span>Last updated</span><strong>{timestamp(booking.updatedAt)}</strong></div>
+                            <div>
+                                <span>Date</span>
+                                <strong>
+                                    {slot
+                                        ? formatDate(slot.date)
+                                        : "Not available"}
+                                </strong>
+                            </div>
+                            <div>
+                                <span>Time</span>
+                                <strong>
+                                    {slot
+                                        ? formatTime(slot.startTime) +
+                                          " – " +
+                                          formatTime(slot.endTime)
+                                        : "Not available"}
+                                </strong>
+                            </div>
+                            <div>
+                                <span>Facilitator</span>
+                                <strong>
+                                    {slot?.instructor ?? "Not assigned"}
+                                </strong>
+                            </div>
+                            <div>
+                                <span>Location</span>
+                                <strong>
+                                    {slot?.location ?? "Check with WIL"}
+                                </strong>
+                            </div>
+                            <div>
+                                <span>Submitted</span>
+                                <strong>{timestamp(booking.createdAt)}</strong>
+                            </div>
+                            <div>
+                                <span>Last updated</span>
+                                <strong>{timestamp(booking.updatedAt)}</strong>
+                            </div>
                         </div>
                         {booking.notes && (
                             <div className="notes-field readonly-notes">
@@ -123,26 +194,43 @@ export default function BookingDetails() {
                         <h2>Booking updates</h2>
                         <div className="timeline">
                             <div>
-                                <i><Icon name="check" size={14} /></i>
+                                <i>
+                                    <Icon name="check" size={14} />
+                                </i>
                                 <section>
                                     <strong>Booking submitted</strong>
-                                    <p>Your group submitted this consultation request.</p>
+                                    <p>
+                                        Your group submitted this consultation
+                                        request.
+                                    </p>
                                     <span>{timestamp(booking.createdAt)}</span>
                                 </section>
                             </div>
                             <div className="current">
-                                <i><Icon name={booking.status === "Cancelled" || booking.status === "Rejected" ? "info" : "clock"} size={14} /></i>
+                                <i>
+                                    <Icon
+                                        name={
+                                            booking.status === "Cancelled" ||
+                                            booking.status === "Rejected"
+                                                ? "info"
+                                                : "clock"
+                                        }
+                                        size={14}
+                                    />
+                                </i>
                                 <section>
                                     <strong>{timelineLabel}</strong>
-                                    <p>{booking.status === "Pending"
-                                        ? "No approval decision has been recorded yet."
-                                        : booking.status === "Approved"
-                                          ? "Your booking has been marked approved in this workspace."
-                                          : booking.status === "Completed"
-                                            ? "This consultation has been marked completed."
-                                            : booking.status === "Cancelled"
-                                              ? "Your group cancelled this booking."
-                                              : "This booking has been marked rejected."}</p>
+                                    <p>
+                                        {booking.status === "Pending"
+                                            ? "No approval decision has been recorded yet."
+                                            : booking.status === "Approved"
+                                              ? "Your booking has been marked approved in this workspace."
+                                              : booking.status === "Completed"
+                                                ? "This consultation has been marked completed."
+                                                : booking.status === "Cancelled"
+                                                  ? "Your group cancelled this booking."
+                                                  : "This booking has been marked rejected."}
+                                    </p>
                                     <span>{timestamp(booking.updatedAt)}</span>
                                 </section>
                             </div>
@@ -152,7 +240,9 @@ export default function BookingDetails() {
 
                 <aside>
                     <section className="panel queue-card">
-                        <span className="live-label"><i /> Booking status</span>
+                        <span className="live-label">
+                            <i /> Booking status
+                        </span>
                         <h2>{booking.status}</h2>
                         <p>
                             {booking.status === "Pending"
@@ -163,17 +253,35 @@ export default function BookingDetails() {
                         </p>
                         <div className="queue-number">
                             <span>Booking reference</span>
-                            <strong className="reference-number">{booking.reference}</strong>
+                            <strong className="reference-number">
+                                {booking.reference}
+                            </strong>
                         </div>
                         {canCancel && (
-                            <button className="danger-button full" type="button" onClick={handleCancel}>
+                            <button
+                                className="danger-button full"
+                                type="button"
+                                onClick={handleCancel}
+                            >
                                 <Icon name="close" size={16} />
                                 Cancel booking
                             </button>
                         )}
-                        {message && <p className="form-success" role="status">{message}</p>}
-                        {error && <p className="form-error" role="alert">{error}</p>}
-                        <button className="secondary-button full support-action" type="button" onClick={() => navigate("/student/support")}>
+                        {message && (
+                            <p className="form-success" role="status">
+                                {message}
+                            </p>
+                        )}
+                        {error && (
+                            <p className="form-error" role="alert">
+                                {error}
+                            </p>
+                        )}
+                        <button
+                            className="secondary-button full support-action"
+                            type="button"
+                            onClick={() => navigate("/student/support")}
+                        >
                             <Icon name="info" size={16} />
                             View support details
                         </button>
@@ -182,9 +290,14 @@ export default function BookingDetails() {
                     <section className="panel instructions">
                         <h2>What happens next?</h2>
                         <ul>
-                            <li>Keep the booking reference for any follow-up.</li>
+                            <li>
+                                Keep the booking reference for any follow-up.
+                            </li>
                             <li>Check My Bookings for status changes.</li>
-                            <li>Use Support details if your schedule looks incorrect.</li>
+                            <li>
+                                Use Support details if your schedule looks
+                                incorrect.
+                            </li>
                         </ul>
                     </section>
                 </aside>

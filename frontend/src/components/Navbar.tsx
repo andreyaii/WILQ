@@ -39,12 +39,15 @@ export function StudentSidebar({
 }: SidebarProps) {
     const { profile } = useStudentData();
     const groupName = profile.groupName.trim() || "Student group";
-    const groupSubtitle = [profile.program, profile.section].filter(Boolean).join(" ") || "Group workspace";
+    const groupSubtitle =
+        [profile.program, profile.section].filter(Boolean).join(" ") ||
+        "Group workspace";
     const isActive = (path: Route) =>
         path === "/student/bookings"
             ? route.includes("/student/bookings")
             : route === path ||
-              (path === "/student/slots" && route === "/student/booking-confirmation");
+              (path === "/student/slots" &&
+                  route === "/student/booking-confirmation");
 
     const goTo = (path: Route) => {
         navigate(path);
@@ -53,11 +56,23 @@ export function StudentSidebar({
 
     return (
         <>
-            {mobileOpen && <button className="scrim" type="button" aria-label="Close navigation" onClick={onClose} />}
+            {mobileOpen && (
+                <button
+                    className="scrim"
+                    type="button"
+                    aria-label="Close navigation"
+                    onClick={onClose}
+                />
+            )}
             <aside className={"sidebar " + (mobileOpen ? "sidebar-open" : "")}>
                 <div className="side-top">
                     <Brand dark />
-                    <button className="icon-button mobile-close" type="button" onClick={onClose} aria-label="Close menu">
+                    <button
+                        className="icon-button mobile-close"
+                        type="button"
+                        onClick={onClose}
+                        aria-label="Close menu"
+                    >
                         <Icon name="close" />
                     </button>
                 </div>
@@ -67,8 +82,13 @@ export function StudentSidebar({
                         <button
                             key={item.path}
                             type="button"
-                            className={"nav-item " + (isActive(item.path) ? "active" : "")}
-                            aria-current={isActive(item.path) ? "page" : undefined}
+                            className={
+                                "nav-item " +
+                                (isActive(item.path) ? "active" : "")
+                            }
+                            aria-current={
+                                isActive(item.path) ? "page" : undefined
+                            }
                             onClick={() => goTo(item.path)}
                         >
                             <Icon name={item.icon} />
@@ -77,15 +97,33 @@ export function StudentSidebar({
                     ))}
                 </nav>
                 <div className="side-help">
-                    <div className="help-icon"><Icon name="info" size={18} /></div>
+                    <div className="help-icon">
+                        <Icon name="info" size={18} />
+                    </div>
                     <strong>Need assistance?</strong>
-                    <p>Get help with booking concerns, schedule changes, or your group account.</p>
-                    <button type="button" onClick={() => goTo("/student/support")}>View support details <Icon name="arrow" size={13} /></button>
+                    <p>
+                        Get help with booking concerns, schedule changes, or
+                        your group account.
+                    </p>
+                    <button
+                        type="button"
+                        onClick={() => goTo("/student/support")}
+                    >
+                        View support details <Icon name="arrow" size={13} />
+                    </button>
                 </div>
                 <div className="side-profile">
                     <div className="avatar">{getInitials(groupName)}</div>
-                    <div><strong>{groupName}</strong><span>{groupSubtitle}</span></div>
-                    <button type="button" aria-label="Log out" title="Return to login" onClick={() => navigate("/")}>
+                    <div>
+                        <strong>{groupName}</strong>
+                        <span>{groupSubtitle}</span>
+                    </div>
+                    <button
+                        type="button"
+                        aria-label="Log out"
+                        title="Return to login"
+                        onClick={() => navigate("/")}
+                    >
                         <Icon name="logout" size={18} />
                     </button>
                 </div>
@@ -98,14 +136,16 @@ const sampleNotifications = [
     {
         id: "notif-1",
         title: "Session Rescheduled",
-        message: "Your instructor has paused the consultation session. Your booking is moved to 2:30 PM.",
+        message:
+            "Your instructor has paused the consultation session. Your booking is moved to 2:30 PM.",
         time: "10 mins ago",
         unread: true,
     },
     {
         id: "notif-2",
         title: "Queue Notification",
-        message: "Consultation queue is now active. Please be prepared when your reference number is called.",
+        message:
+            "Consultation queue is now active. Please be prepared when your reference number is called.",
         time: "1 hour ago",
         unread: false,
     },
@@ -124,22 +164,33 @@ export function StudentTopbar({
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
-            if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+            if (
+                notifRef.current &&
+                !notifRef.current.contains(event.target as Node)
+            ) {
                 setNotificationsOpen(false);
             }
         }
         if (notificationsOpen) {
             document.addEventListener("mousedown", handleClickOutside);
-            return () => document.removeEventListener("mousedown", handleClickOutside);
+            return () =>
+                document.removeEventListener("mousedown", handleClickOutside);
         }
     }, [notificationsOpen]);
 
     const groupName = profile.groupName.trim() || "Student group";
-    const groupSubtitle = [profile.program, profile.section].filter(Boolean).join(" ") || "Student group";
+    const groupSubtitle =
+        [profile.program, profile.section].filter(Boolean).join(" ") ||
+        "Student group";
 
     return (
         <header className="topbar">
-            <button className="icon-button menu-button" type="button" onClick={onOpen} aria-label="Open menu">
+            <button
+                className="icon-button menu-button"
+                type="button"
+                onClick={onOpen}
+                aria-label="Open menu"
+            >
                 <Icon name="menu" />
             </button>
             <div className="top-context">
@@ -149,7 +200,10 @@ export function StudentTopbar({
             <div className="top-actions">
                 <div className="notification-wrapper" ref={notifRef}>
                     <button
-                        className={"notification " + (notificationsOpen ? "active" : "")}
+                        className={
+                            "notification " +
+                            (notificationsOpen ? "active" : "")
+                        }
                         type="button"
                         aria-label="View notifications"
                         aria-expanded={notificationsOpen}
@@ -159,16 +213,25 @@ export function StudentTopbar({
                         <span className="notif-dot" />
                     </button>
                     {notificationsOpen && (
-                        <div className="notification-popup" role="dialog" aria-label="Notifications">
+                        <div
+                            className="notification-popup"
+                            role="dialog"
+                            aria-label="Notifications"
+                        >
                             <div className="notification-header">
                                 <strong>Notifications</strong>
-                                <span className="notification-badge">1 unread</span>
+                                <span className="notification-badge">
+                                    1 unread
+                                </span>
                             </div>
                             <div className="notification-list">
                                 {sampleNotifications.map((notif) => (
                                     <div
                                         key={notif.id}
-                                        className={"notification-item " + (notif.unread ? "unread" : "")}
+                                        className={
+                                            "notification-item " +
+                                            (notif.unread ? "unread" : "")
+                                        }
                                     >
                                         <div className="notification-item-dot" />
                                         <div className="notification-item-content">
@@ -182,7 +245,10 @@ export function StudentTopbar({
                                 ))}
                             </div>
                             <div className="notification-footer">
-                                <button type="button" onClick={() => setNotificationsOpen(false)}>
+                                <button
+                                    type="button"
+                                    onClick={() => setNotificationsOpen(false)}
+                                >
                                     Dismiss
                                 </button>
                             </div>
@@ -192,7 +258,10 @@ export function StudentTopbar({
                 <div className="top-divider" />
                 <div className="top-profile">
                     <div className="avatar">{getInitials(groupName)}</div>
-                    <div><strong>{groupName}</strong><span>{groupSubtitle}</span></div>
+                    <div>
+                        <strong>{groupName}</strong>
+                        <span>{groupSubtitle}</span>
+                    </div>
                 </div>
             </div>
         </header>

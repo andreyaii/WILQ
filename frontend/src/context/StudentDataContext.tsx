@@ -1,10 +1,10 @@
 import {
     createContext,
+    type ReactNode,
     useContext,
     useEffect,
     useMemo,
     useState,
-    type ReactNode,
 } from "react";
 
 const STORAGE_KEY = "wilq.student-workspace.v2";
@@ -61,11 +61,7 @@ type StudentDataValue = WorkspaceState & {
     getSlot: (slotId: string) => ConsultationSlot | undefined;
     getBooking: (reference: string) => Booking | undefined;
     getRemainingSeats: (slot: ConsultationSlot) => number;
-    createBooking: (
-        slotId: string,
-        purpose: string,
-        notes: string,
-    ) => Booking;
+    createBooking: (slotId: string, purpose: string, notes: string) => Booking;
     cancelBooking: (reference: string) => void;
     updateProfile: (updates: Partial<StudentProfile>) => void;
 };
@@ -84,7 +80,11 @@ function buildSampleSlots(): ConsultationSlot[] {
     const cursor = new Date();
     cursor.setHours(0, 0, 0, 0);
 
-    for (let attempts = 0; businessDays.length < 8 && attempts < 24; attempts += 1) {
+    for (
+        let attempts = 0;
+        businessDays.length < 8 && attempts < 24;
+        attempts += 1
+    ) {
         cursor.setDate(cursor.getDate() + 1);
         const weekday = cursor.getDay();
         if (weekday !== 0 && weekday !== 6) {
@@ -180,7 +180,9 @@ function readStoredState(): WorkspaceState {
         }
 
         const parsed = JSON.parse(raw) as Partial<WorkspaceState>;
-        const rawSlots = Array.isArray(parsed.slots) ? parsed.slots : fallback.slots;
+        const rawSlots = Array.isArray(parsed.slots)
+            ? parsed.slots
+            : fallback.slots;
         // If stored slots were from the old schedule (missing 07:30 morning slots), use fresh slots
         const hasNewSlots = rawSlots.some((s) => s.startTime === "07:30");
         const slots = hasNewSlots ? rawSlots : fallback.slots;
@@ -189,7 +191,10 @@ function readStoredState(): WorkspaceState {
             ...fallback.profile,
             ...(parsed.profile ?? {}),
             groupCode: parsed.profile?.groupCode || "2526-sem2-cs342-01",
-            section: parsed.profile?.section === "3A" ? "F1" : (parsed.profile?.section || "F1"),
+            section:
+                parsed.profile?.section === "3A"
+                    ? "F1"
+                    : parsed.profile?.section || "F1",
         };
 
         const loaded: WorkspaceState = {
@@ -299,24 +304,34 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
         ) => {
             const slot = getSlot(slotId);
             if (!slot) {
-                throw new Error("That consultation slot could not be found. Please choose another slot.");
+                throw new Error(
+                    "That consultation slot could not be found. Please choose another slot.",
+                );
             }
 
             const startsAt = new Date(slot.date + "T" + slot.startTime + ":00");
             if (startsAt.getTime() <= Date.now()) {
-                throw new Error("That consultation time has already passed. Please choose a future slot.");
+                throw new Error(
+                    "That consultation time has already passed. Please choose a future slot.",
+                );
             }
 
             if (getRemainingSeats(slot) < 1) {
-                throw new Error("That slot is full. Please choose another available time.");
+                throw new Error(
+                    "That slot is full. Please choose another available time.",
+                );
             }
 
             const activeBooking = state.bookings.find(isActiveBooking);
             if (activeBooking) {
                 if (activeBooking.slotId === slotId) {
-                    throw new Error("Your group already has an active booking for this slot.");
+                    throw new Error(
+                        "Your group already has an active booking for this slot.",
+                    );
                 }
-                throw new Error("Your group already has an active booking. Review or cancel it before choosing another time.");
+                throw new Error(
+                    "Your group already has an active booking. Review or cancel it before choosing another time.",
+                );
             }
 
             const year = new Date().getFullYear();
@@ -345,7 +360,9 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
         const cancelBooking = (reference: string) => {
             const booking = getBooking(reference);
             if (!booking || !["Pending", "Approved"].includes(booking.status)) {
-                throw new Error("Only pending or approved bookings can be cancelled.");
+                throw new Error(
+                    "Only pending or approved bookings can be cancelled.",
+                );
             }
 
             const timestamp = new Date().toISOString();
@@ -389,7 +406,9 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
 export function useStudentData() {
     const context = useContext(StudentDataContext);
     if (!context) {
-        throw new Error("useStudentData must be used inside StudentDataProvider.");
+        throw new Error(
+            "useStudentData must be used inside StudentDataProvider.",
+        );
     }
     return context;
 }

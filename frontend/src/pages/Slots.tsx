@@ -2,14 +2,17 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Icon } from "../components/Icon";
 import {
+    type ConsultationSlot,
     formatDate,
     formatTime,
-    type ConsultationSlot,
     useStudentData,
 } from "../context/StudentDataContext";
 
 function slotHasPassed(slot: ConsultationSlot) {
-    return new Date(slot.date + "T" + slot.startTime + ":00").getTime() <= Date.now();
+    return (
+        new Date(slot.date + "T" + slot.startTime + ":00").getTime() <=
+        Date.now()
+    );
 }
 
 export default function Slots() {
@@ -33,7 +36,11 @@ export default function Slots() {
         String(today.getDate()).padStart(2, "0");
 
     const dates = Array.from(
-        new Set(slots.filter((slot) => slot.date >= todayKey).map((slot) => slot.date)),
+        new Set(
+            slots
+                .filter((slot) => slot.date >= todayKey)
+                .map((slot) => slot.date),
+        ),
     ).slice(0, 6);
     const [selectedDate, setSelectedDate] = useState(dates[0] ?? "");
 
@@ -41,11 +48,12 @@ export default function Slots() {
         if (!dates.includes(selectedDate)) {
             setSelectedDate(dates[0] ?? "");
         }
-    }, [selectedDate, dates.join("|")]);
+    }, [selectedDate, dates]);
 
     const selectedSlot = selectedSlotId ? getSlot(selectedSlotId) : undefined;
-    const activeBooking = bookings.find((booking) =>
-        booking.status === "Pending" || booking.status === "Approved"
+    const activeBooking = bookings.find(
+        (booking) =>
+            booking.status === "Pending" || booking.status === "Approved",
     );
     const slotsForDate = slots.filter(
         (slot) =>
@@ -58,7 +66,9 @@ export default function Slots() {
         .filter((slot) => slot.date === selectedDate)
         .sort((a, b) => a.startTime.localeCompare(b.startTime));
     const morningSlots = dateSlots.filter((slot) => slot.startTime < "12:00");
-    const afternoonSlots = dateSlots.filter((slot) => slot.startTime >= "12:00");
+    const afternoonSlots = dateSlots.filter(
+        (slot) => slot.startTime >= "12:00",
+    );
 
     const dateLabel = (date: string) => ({
         weekday: new Date(date + "T00:00:00").toLocaleDateString("en-PH", {
@@ -76,7 +86,10 @@ export default function Slots() {
                 <div>
                     <span className="eyebrow">Consultation schedule</span>
                     <h1>Available slots</h1>
-                    <p>Choose a date and time for your group’s next consultation.</p>
+                    <p>
+                        Choose a date and time for your group’s next
+                        consultation.
+                    </p>
                 </div>
                 <button
                     className="secondary-button"
@@ -91,7 +104,9 @@ export default function Slots() {
             <div className="notice-banner">
                 <Icon name="info" size={17} />
                 <span>
-                    Consultation Guidelines: Please book at least 24 hours in advance and arrive at the WIL office 5 minutes before your scheduled slot with your capstone materials ready.
+                    Consultation Guidelines: Please book at least 24 hours in
+                    advance and arrive at the WIL office 5 minutes before your
+                    scheduled slot with your capstone materials ready.
                 </span>
             </div>
 
@@ -103,8 +118,12 @@ export default function Slots() {
                             <h2>Select a date</h2>
                         </div>
                         <div className="legend">
-                            <span><i className="available" /> Available</span>
-                            <span><i /> Unavailable</span>
+                            <span>
+                                <i className="available" /> Available
+                            </span>
+                            <span>
+                                <i /> Unavailable
+                            </span>
                         </div>
                     </div>
 
@@ -122,12 +141,19 @@ export default function Slots() {
                                     <button
                                         type="button"
                                         key={date}
-                                        className={selectedDate === date ? "selected" : ""}
+                                        className={
+                                            selectedDate === date
+                                                ? "selected"
+                                                : ""
+                                        }
                                         disabled={!hasAvailability}
                                         aria-pressed={selectedDate === date}
                                         onClick={() => {
                                             setSelectedDate(date);
-                                            if (selectedSlot && selectedSlot.date !== date) {
+                                            if (
+                                                selectedSlot &&
+                                                selectedSlot.date !== date
+                                            ) {
                                                 setSelectedSlotId(null);
                                             }
                                         }}
@@ -141,10 +167,19 @@ export default function Slots() {
                         </div>
                     ) : (
                         <div className="empty-state compact-empty">
-                            <div className="empty-state-icon"><Icon name="calendar" size={22} /></div>
+                            <div className="empty-state-icon">
+                                <Icon name="calendar" size={22} />
+                            </div>
                             <h3>No future slots listed</h3>
-                            <p>Check support details for guidance while the consultation schedule is being updated.</p>
-                            <button className="secondary-button" type="button" onClick={() => navigate("/student/support")}>
+                            <p>
+                                Check support details for guidance while the
+                                consultation schedule is being updated.
+                            </p>
+                            <button
+                                className="secondary-button"
+                                type="button"
+                                onClick={() => navigate("/student/support")}
+                            >
                                 View support details
                             </button>
                         </div>
@@ -153,7 +188,11 @@ export default function Slots() {
                     <div className="availability-heading">
                         <div>
                             <span className="eyebrow">Step 2 of 2</span>
-                            <h2>{selectedDate ? formatDate(selectedDate) : "Select a date first"}</h2>
+                            <h2>
+                                {selectedDate
+                                    ? formatDate(selectedDate)
+                                    : "Select a date first"}
+                            </h2>
                         </div>
                     </div>
 
@@ -161,8 +200,22 @@ export default function Slots() {
                         <div className="inline-empty active-booking-notice">
                             <Icon name="info" size={17} />
                             <span>
-                                Your group already has an active booking ({activeBooking.reference}). Review it before making another booking.
-                                <button className="text-button" type="button" onClick={() => navigate("/student/bookings/" + activeBooking.reference)}>View current booking <Icon name="arrow" size={14} /></button>
+                                Your group already has an active booking (
+                                {activeBooking.reference}). Review it before
+                                making another booking.
+                                <button
+                                    className="text-button"
+                                    type="button"
+                                    onClick={() =>
+                                        navigate(
+                                            "/student/bookings/" +
+                                                activeBooking.reference,
+                                        )
+                                    }
+                                >
+                                    View current booking{" "}
+                                    <Icon name="arrow" size={14} />
+                                </button>
                             </span>
                         </div>
                     )}
@@ -170,50 +223,96 @@ export default function Slots() {
                     {slotsForDate.length > 0 ? (
                         <div className="slot-columns">
                             <div className="slot-column">
-                                <div className="slot-column-header">Morning</div>
+                                <div className="slot-column-header">
+                                    Morning
+                                </div>
                                 <div className="slot-vertical-list">
                                     {morningSlots.map((slot) => {
-                                        const remaining = getRemainingSeats(slot);
-                                        const disabled = remaining < 1 || slotHasPassed(slot) || Boolean(activeBooking);
+                                        const remaining =
+                                            getRemainingSeats(slot);
+                                        const disabled =
+                                            remaining < 1 ||
+                                            slotHasPassed(slot) ||
+                                            Boolean(activeBooking);
                                         return (
                                             <button
                                                 type="button"
                                                 key={slot.id}
-                                                className={selectedSlotId === slot.id ? "selected" : ""}
+                                                className={
+                                                    selectedSlotId === slot.id
+                                                        ? "selected"
+                                                        : ""
+                                                }
                                                 disabled={disabled}
-                                                aria-pressed={selectedSlotId === slot.id}
-                                                onClick={() => setSelectedSlotId(slot.id)}
+                                                aria-pressed={
+                                                    selectedSlotId === slot.id
+                                                }
+                                                onClick={() =>
+                                                    setSelectedSlotId(slot.id)
+                                                }
                                             >
                                                 <Icon name="clock" size={16} />
                                                 <span className="slot-time-label">
-                                                    <strong>{formatTime(slot.startTime)}</strong>
+                                                    <strong>
+                                                        {formatTime(
+                                                            slot.startTime,
+                                                        )}
+                                                    </strong>
                                                 </span>
-                                                {selectedSlotId === slot.id && <Icon name="check" size={16} />}
+                                                {selectedSlotId === slot.id && (
+                                                    <Icon
+                                                        name="check"
+                                                        size={16}
+                                                    />
+                                                )}
                                             </button>
                                         );
                                     })}
                                 </div>
                             </div>
                             <div className="slot-column">
-                                <div className="slot-column-header">Afternoon</div>
+                                <div className="slot-column-header">
+                                    Afternoon
+                                </div>
                                 <div className="slot-vertical-list">
                                     {afternoonSlots.map((slot) => {
-                                        const remaining = getRemainingSeats(slot);
-                                        const disabled = remaining < 1 || slotHasPassed(slot) || Boolean(activeBooking);
+                                        const remaining =
+                                            getRemainingSeats(slot);
+                                        const disabled =
+                                            remaining < 1 ||
+                                            slotHasPassed(slot) ||
+                                            Boolean(activeBooking);
                                         return (
                                             <button
                                                 type="button"
                                                 key={slot.id}
-                                                className={selectedSlotId === slot.id ? "selected" : ""}
+                                                className={
+                                                    selectedSlotId === slot.id
+                                                        ? "selected"
+                                                        : ""
+                                                }
                                                 disabled={disabled}
-                                                aria-pressed={selectedSlotId === slot.id}
-                                                onClick={() => setSelectedSlotId(slot.id)}
+                                                aria-pressed={
+                                                    selectedSlotId === slot.id
+                                                }
+                                                onClick={() =>
+                                                    setSelectedSlotId(slot.id)
+                                                }
                                             >
                                                 <Icon name="clock" size={16} />
                                                 <span className="slot-time-label">
-                                                    <strong>{formatTime(slot.startTime)}</strong>
+                                                    <strong>
+                                                        {formatTime(
+                                                            slot.startTime,
+                                                        )}
+                                                    </strong>
                                                 </span>
-                                                {selectedSlotId === slot.id && <Icon name="check" size={16} />}
+                                                {selectedSlotId === slot.id && (
+                                                    <Icon
+                                                        name="check"
+                                                        size={16}
+                                                    />
+                                                )}
                                             </button>
                                         );
                                     })}
@@ -223,13 +322,20 @@ export default function Slots() {
                     ) : (
                         <div className="inline-empty">
                             <Icon name="info" size={17} />
-                            <span>No open times remain on this date. Please choose another date.</span>
+                            <span>
+                                No open times remain on this date. Please choose
+                                another date.
+                            </span>
                         </div>
                     )}
 
                     <div className="availability-note">
                         <Icon name="info" size={16} />
-                        <span>Bookings are reserved as pending until reviewed. Please double-check the date and time before continuing.</span>
+                        <span>
+                            Bookings are reserved as pending until reviewed.
+                            Please double-check the date and time before
+                            continuing.
+                        </span>
                     </div>
                 </section>
 
@@ -240,44 +346,92 @@ export default function Slots() {
                         <>
                             <div className="summary-calendar">
                                 <div>
-                                    <span>{new Date(selectedSlot.date + "T00:00:00").toLocaleDateString("en-PH", { month: "short" }).toUpperCase()}</span>
-                                    <strong>{new Date(selectedSlot.date + "T00:00:00").getDate()}</strong>
+                                    <span>
+                                        {new Date(
+                                            selectedSlot.date + "T00:00:00",
+                                        )
+                                            .toLocaleDateString("en-PH", {
+                                                month: "short",
+                                            })
+                                            .toUpperCase()}
+                                    </span>
+                                    <strong>
+                                        {new Date(
+                                            selectedSlot.date + "T00:00:00",
+                                        ).getDate()}
+                                    </strong>
                                 </div>
                                 <p>
                                     <strong>{selectedSlot.topic}</strong>
-                                    <span>{formatDate(selectedSlot.date, { weekday: "long", year: undefined })}</span>
+                                    <span>
+                                        {formatDate(selectedSlot.date, {
+                                            weekday: "long",
+                                            year: undefined,
+                                        })}
+                                    </span>
                                 </p>
                             </div>
                             <div className="summary-list">
                                 <div>
                                     <Icon name="clock" size={17} />
-                                    <span>Time<strong>{formatTime(selectedSlot.startTime)} – {formatTime(selectedSlot.endTime)}</strong></span>
+                                    <span>
+                                        Time
+                                        <strong>
+                                            {formatTime(selectedSlot.startTime)}{" "}
+                                            – {formatTime(selectedSlot.endTime)}
+                                        </strong>
+                                    </span>
                                 </div>
                                 <div>
                                     <Icon name="user" size={17} />
-                                    <span>Facilitator<strong>{selectedSlot.instructor}</strong></span>
+                                    <span>
+                                        Facilitator
+                                        <strong>
+                                            {selectedSlot.instructor}
+                                        </strong>
+                                    </span>
                                 </div>
                                 <div>
                                     <Icon name="grid" size={17} />
-                                    <span>Location<strong>{selectedSlot.location}</strong></span>
+                                    <span>
+                                        Location
+                                        <strong>{selectedSlot.location}</strong>
+                                    </span>
                                 </div>
                             </div>
                             <button
                                 className="primary-button full"
                                 type="button"
-                                disabled={getRemainingSeats(selectedSlot) < 1 || slotHasPassed(selectedSlot)}
-                                onClick={() => navigate("/student/booking-confirmation")}
+                                disabled={
+                                    getRemainingSeats(selectedSlot) < 1 ||
+                                    slotHasPassed(selectedSlot)
+                                }
+                                onClick={() =>
+                                    navigate("/student/booking-confirmation")
+                                }
                             >
                                 Continue to booking
                                 <Icon name="arrow" size={17} />
                             </button>
-                            <p className="selection-footnote">Your slot is not reserved until you submit the booking.</p>
+                            <p className="selection-footnote">
+                                Your slot is not reserved until you submit the
+                                booking.
+                            </p>
                         </>
                     ) : (
                         <div className="summary-placeholder">
-                            <div className="empty-state-icon"><Icon name="calendar" size={22} /></div>
-                            <p>Pick an available time to review the details here.</p>
-                            <button className="secondary-button full" type="button" onClick={() => navigate("/student/bookings")}>
+                            <div className="empty-state-icon">
+                                <Icon name="calendar" size={22} />
+                            </div>
+                            <p>
+                                Pick an available time to review the details
+                                here.
+                            </p>
+                            <button
+                                className="secondary-button full"
+                                type="button"
+                                onClick={() => navigate("/student/bookings")}
+                            >
                                 View my bookings
                             </button>
                         </div>
