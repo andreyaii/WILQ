@@ -4,11 +4,11 @@ on:
   push:
     branches: ["main"]
     paths:
-      - "frontend/**" # Any change in the frontend directory will trigger this workflow
+      - "frontend/**"
   pull_request:
     branches: ["main"]
     paths:
-      - "frontend/**" # Any change in the frontend directory will trigger this workflow
+      - "frontend/**"
 
 jobs:
   build:
@@ -16,21 +16,25 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [26]   
+        node-version: [26]
 
     steps:
       - uses: actions/checkout@v6
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Nub.js
         uses: nubjs/setup-nub@v0
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-          cache-dependency-path: frontend/package-lock.json   # Better caching
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
         working-directory: ./frontend
         run: nub ci
+
+      - name: Biome CI check
+        working-directory: ./frontend
+        run: nub exec biome ci .
 
       - name: Build
         working-directory: ./frontend
