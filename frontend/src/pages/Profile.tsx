@@ -5,14 +5,35 @@ import { getInitials, type StudentProfile, useStudentData } from "../context/Stu
 
 export default function Profile() {
     const navigate = useNavigate();
-    const { profile, updateProfile, bookings } = useStudentData();
+    const { profile, updateProfile, bookings, resetPassword } = useStudentData();
     const [draft, setDraft] = useState<StudentProfile>(profile);
     const [saved, setSaved] = useState(false);
     const [error, setError] = useState("");
 
+    // Password reset modal state
+    const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmNewPassword, setConfirmNewPassword] = useState("");
+    const [showPasswords, setShowPasswords] = useState(false);
+    const [resetError, setResetError] = useState("");
+    const [resetSuccess, setResetSuccess] = useState("");
+
     useEffect(() => {
         setDraft(profile);
     }, [profile]);
+
+    // Close modal on Escape key
+    useEffect(() => {
+        if (!isResetModalOpen) return;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                setIsResetModalOpen(false);
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [isResetModalOpen]);
 
     const update = (field: keyof StudentProfile, value: string) => {
         setDraft((current) => ({ ...current, [field]: value }));
@@ -33,6 +54,36 @@ export default function Profile() {
         updateProfile({ ...draft, groupName, groupCode, program, section });
         setSaved(true);
         setError("");
+    };
+
+    const handlePasswordReset = (event: SubmitEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setResetError("");
+        setResetSuccess("");
+
+        if (newPassword !== confirmNewPassword) {
+            setResetError("New passwords do not match. Please verify both fields.");
+            return;
+        }
+
+        const result = resetPassword(currentPassword, newPassword);
+        if (result.success) {
+            setResetSuccess("Group account password has been updated successfully.");
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmNewPassword("");
+        } else {
+            setResetError(result.error || "Failed to update password.");
+        }
+    };
+
+    const openResetModal = () => {
+        setResetError("");
+        setResetSuccess("");
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmNewPassword("");
+        setIsResetModalOpen(true);
     };
 
     return (
@@ -109,8 +160,153 @@ export default function Profile() {
                             <Icon name="info" size={16} />Account support
                         </button>
                     </section>
+
+                    <section className="panel danger-zone-card">
+                        <div className="danger-zone-header">
+                            <Icon name="danger" size={16} />
+                            <h3>Danger zone</h3>
+                        </div>
+                        <p className="danger-zone-desc">
+                            Updates credentials for all group members. Requires current password.
+                        </p>
+                        <button
+                            type="button"
+                            className="danger-zone-btn"
+                            onClick={openResetModal}
+                        >
+                            Reset password
+                        </button>
+                    </section>
                 </aside>
             </div>
+
+            {/* Centered password reset modal with blurred backdrop */}
+            {isResetModalOpen && (
+                <div
+                    className="modal-backdrop"
+                    onClick={() => setIsResetModalOpen(false)}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="modal-reset-title"
+                >
+                    <div
+                        className="password-reset-modal"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="modal-header">
+                            <div className="modal-title-wrap">
+                                <div className="reset-modal-icon">
+                                    <Icon name="lock" size={18} />
+                                </div>
+                                <div>
+                                    <h2 id="modal-reset-title">Reset password</h2>
+                                    <p>Change your group account login password</p>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                className="modal-close-button"
+                                onClick={() => setIsResetModalOpen(false)}
+                                aria-label="Close dialog"
+                            >
+                                <Icon name="close" size={15} />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handlePasswordReset} className="modal-body">
+                            <p className="modal-description">
+                                Enter your current password to authenticate, then set a new password for your group account.
+                            </p>
+
+                            <div className="reset-field">
+                                <label htmlFor="modal-curr-pass">Current password</label>
+                                <div className="reset-input">
+                                    <Icon name="lock" size={16} />
+                                    <input
+                                        id="modal-curr-pass"
+                                        type={showPasswords ? "text" : "password"}
+                                        value={currentPassword}
+                                        onChange={(e) => setCurrentPassword(e.target.value)}
+                                        placeholder="Enter current password"
+                                        required
+                                        autoFocus
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="reset-field">
+                                <label htmlFor="modal-new-pass">New password</label>
+                                <div className="reset-input">
+                                    <Icon name="lock" size={16} />
+                                    <input
+                                        id="modal-new-pass"
+                                        type={showPasswords ? "text" : "password"}
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        placeholder="At least 6 characters"
+                                        minLength={6}
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="reset-field">
+                                <label htmlFor="modal-confirm-pass">Confirm new password</label>
+                                <div className="reset-input">
+                                    <Icon name="lock" size={16} />
+                                    <input
+                                        id="modal-confirm-pass"
+                                        type={showPasswords ? "text" : "password"}
+                                        value={confirmNewPassword}
+                                        onChange={(e) => setConfirmNewPassword(e.target.value)}
+                                        placeholder="Repeat new password"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="reset-toggle-wrap">
+                                <button
+                                    type="button"
+                                    className="text-button"
+                                    onClick={() => setShowPasswords(!showPasswords)}
+                                >
+                                    <Icon name="eye" size={14} />
+                                    <span>{showPasswords ? "Hide passwords" : "Show passwords"}</span>
+                                </button>
+                            </div>
+
+                            {resetError && (
+                                <div className="form-error reset-message" role="alert">
+                                    <Icon name="info" size={15} />
+                                    <span>{resetError}</span>
+                                </div>
+                            )}
+
+                            {resetSuccess && (
+                                <div className="form-success reset-message" role="status">
+                                    <Icon name="check" size={15} />
+                                    <span>{resetSuccess}</span>
+                                </div>
+                            )}
+
+                            <div className="modal-footer">
+                                <button
+                                    type="button"
+                                    className="modal-cancel-btn"
+                                    onClick={() => setIsResetModalOpen(false)}
+                                >
+                                    Cancel
+                                </button>
+                                <button className="primary-button reset-submit-btn" type="submit">
+                                    <Icon name="lock" size={15} />
+                                    Update password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </main>
     );
 }

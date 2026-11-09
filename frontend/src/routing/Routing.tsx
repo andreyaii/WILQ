@@ -13,21 +13,30 @@ import Landing from "../pages/Landing";
 import Profile from "../pages/Profile";
 import Slots from "../pages/Slots";
 import Support from "../pages/Support";
-import { StudentDataProvider } from "../context/StudentDataContext";
+import { StudentDataProvider, useStudentData } from "../context/StudentDataContext";
 import ScrollToTop from "./ScrollToTop";
 
-export default function Routing() {
+function RoutingView() {
     const navigate = useNavigate();
     const location = useLocation();
     const [mobileOpen, setMobileOpen] = useState(false);
+    const { isAuthenticated } = useStudentData();
     const isStudentPage = location.pathname.startsWith("/student");
 
     const handleNavigate = (path: AppRoute) => {
         navigate(path);
     };
 
+    if (isStudentPage && !isAuthenticated) {
+        return (
+            <Routes>
+                <Route path="*" element={<Landing onLogin={() => navigate("/student/dashboard")} />} />
+            </Routes>
+        );
+    }
+
     return (
-        <StudentDataProvider>
+        <>
             <ScrollToTop />
             {isStudentPage ? (
                 <div className="student-layout">
@@ -63,6 +72,14 @@ export default function Routing() {
                     <Route path="*" element={<Landing onLogin={() => navigate("/student/dashboard")} />} />
                 </Routes>
             )}
+        </>
+    );
+}
+
+export default function Routing() {
+    return (
+        <StudentDataProvider>
+            <RoutingView />
         </StudentDataProvider>
     );
 }
