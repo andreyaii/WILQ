@@ -1,7 +1,7 @@
 import { useEffect, useState, type SubmitEvent } from "react";
 import { useNavigate } from "react-router";
-import { Icon } from "../components/Icon";
-import { getInitials, type StudentProfile, useStudentData } from "../context/StudentDataContext";
+import { Icon } from "../../components/Icon.tsx";
+import { getInitials, type StudentProfile, useStudentData } from "../../context/StudentDataContext.tsx";
 
 export default function Profile() {
     const navigate = useNavigate();

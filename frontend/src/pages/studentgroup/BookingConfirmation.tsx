@@ -1,11 +1,11 @@
 import { useState, type SubmitEvent } from "react";
 import { useNavigate } from "react-router";
-import { Icon } from "../components/Icon";
+import { Icon } from "../../components/Icon.tsx";
 import {
     formatDate,
     formatTime,
     useStudentData,
-} from "../context/StudentDataContext";
+} from "../../context/StudentDataContext.tsx";
 
 export default function BookingConfirmation() {
     const navigate = useNavigate();

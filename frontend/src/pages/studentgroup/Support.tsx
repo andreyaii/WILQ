@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { Icon } from "../components/Icon";
+import { Icon } from "../../components/Icon.tsx";
 
 const items = [
     {

@@ -1,6 +1,6 @@
 import { Route, Routes, useNavigate } from "react-router";
-import Dashboard from "../pages/Dashboard";
-import Landing from "../pages/Landing";
+import Dashboard from "../pages/common/Dashboard.tsx";
+import Landing from "../pages/common/Landing.tsx";
 
 export default function MainContent() {
     const navigate = useNavigate();

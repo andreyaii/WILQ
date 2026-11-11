@@ -1,13 +1,13 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router";
-import { Icon } from "../components/Icon";
+import { Icon } from "../../components/Icon.tsx";
 import {
     formatDate,
     formatTime,
     getInitials,
     useStudentData,
     type BookingStatus,
-} from "../context/StudentDataContext";
+} from "../../context/StudentDataContext.tsx";
 
 function StatusBadge({ status }: { status: BookingStatus }) {
     return <span className={"status status-" + status.toLowerCase()}><i />{status}</span>;

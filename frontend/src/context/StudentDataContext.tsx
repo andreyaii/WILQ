@@ -7,8 +7,8 @@ import {
     type ReactNode,
 } from "react";
 
-const STORAGE_KEY = "wilq.student-workspace.v2";
-const LEGACY_STORAGE_KEY = "wilq.student-workspace.v1";
+const STORAGE_KEY = "wilq.studentgroup-workspace.v2";
+const LEGACY_STORAGE_KEY = "wilq.studentgroup-workspace.v1";
 const ACCOUNTS_STORAGE_KEY = "wilq.auth.accounts.v2";
 const SESSION_STORAGE_KEY = "wilq.auth.session.v2";
 
@@ -92,7 +92,6 @@ type StudentDataValue = WorkspaceState & {
     ) => Booking;
     cancelBooking: (reference: string) => void;
     updateProfile: (updates: Partial<StudentProfile>) => void;
-    // Auth methods and state
     currentUser: UserAccount | null;
     isAuthenticated: boolean;
     login: (usernameOrEmail: string, password: string) => { success: boolean; error?: string };
@@ -259,7 +258,6 @@ function readStoredState(): WorkspaceState {
 
         const parsed = JSON.parse(raw) as Partial<WorkspaceState>;
         const rawSlots = Array.isArray(parsed.slots) ? parsed.slots : fallback.slots;
-        // If stored slots were from the old schedule (missing 07:30 morning slots), use fresh slots
         const hasNewSlots = rawSlots.some((s) => s.startTime === "07:30");
         const slots = hasNewSlots ? rawSlots : fallback.slots;
 
@@ -329,7 +327,7 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
         try {
             window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         } catch {
-            // Keep the current session usable when browser storage is unavailable.
+            // Storage fallback
         }
     }, [state]);
 
@@ -337,7 +335,7 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
         try {
             window.localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(accounts));
         } catch {
-            // storage fallback
+            // Storage fallback
         }
     }, [accounts]);
 
@@ -349,7 +347,7 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
                 window.localStorage.setItem(SESSION_STORAGE_KEY, "logged_out");
             }
         } catch {
-            // storage fallback
+            // Storage fallback
         }
     }, [currentUser]);
 
@@ -366,7 +364,7 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
                         setState(addUpcomingSlots(parsed));
                     }
                 } catch {
-                    // Ignore malformed updates from another tab.
+                    // Ignore malformed updates
                 }
             }
             if (event.key === ACCOUNTS_STORAGE_KEY && event.newValue) {
@@ -376,7 +374,7 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
                         setAccounts(parsed);
                     }
                 } catch {
-                    // ignore
+                    // Ignore
                 }
             }
             if (event.key === SESSION_STORAGE_KEY) {
@@ -576,7 +574,22 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
                 contactNumber: "",
             };
 
+            // Save new account & log the user in immediately
             setAccounts((current) => [...current, newAccount]);
+            setCurrentUser(newAccount);
+
+            setState((current) => ({
+                ...current,
+                profile: {
+                    ...current.profile,
+                    groupName: newAccount.groupName,
+                    groupCode: newAccount.groupCode,
+                    program: newAccount.program,
+                    section: newAccount.section,
+                    representative: newAccount.representative || current.profile.representative,
+                    email: newAccount.email,
+                },
+            }));
 
             return { success: true };
         };
@@ -586,7 +599,7 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
             try {
                 window.localStorage.setItem(SESSION_STORAGE_KEY, "logged_out");
             } catch {
-                // ignore
+                // Ignore
             }
         };
 

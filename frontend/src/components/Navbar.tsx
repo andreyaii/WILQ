@@ -42,7 +42,7 @@ export function StudentSidebar({
     const groupSubtitle = [profile.program, profile.section].filter(Boolean).join(" ") || "Group workspace";
     const isActive = (path: Route) =>
         path === "/student/bookings"
-            ? route.includes("/student/bookings")
+            ? route.includes("/studentgroup/bookings")
             : route === path ||
               (path === "/student/slots" && route === "/student/booking-confirmation");
 

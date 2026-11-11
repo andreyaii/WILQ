@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Icon } from "../components/Icon";
+import { Icon } from "../../components/Icon.tsx";
 import {
     formatDate,
     formatTime,
     type ConsultationSlot,
     useStudentData,
-} from "../context/StudentDataContext";
+} from "../../context/StudentDataContext.tsx";
 
 function slotHasPassed(slot: ConsultationSlot) {
     return new Date(slot.date + "T" + slot.startTime + ":00").getTime() <= Date.now();

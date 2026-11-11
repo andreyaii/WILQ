@@ -1,5 +1,5 @@
 import { type ReactNode, type SubmitEvent, useState } from "react";
-import { useStudentData } from "../context/StudentDataContext";
+import { useStudentData } from "../../context/StudentDataContext.tsx";
 
 type LandingProps = {
     onLogin: () => void;
@@ -194,7 +194,7 @@ export default function Landing({ onLogin }: LandingProps) {
                         {mode === "login"
                             ? "Welcome back. Enter your group credentials to manage consultations and queue updates."
                             : mode === "signup"
-                              ? "Create your student group account to begin managing consultation bookings."
+                              ? "Create your studentgroup group account to begin managing consultation bookings."
                               : "Enter your registered username or email address and we will help you recover access."}
                     </p>
 
