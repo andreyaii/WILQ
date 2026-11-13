@@ -57,6 +57,10 @@ export default function Routing() {
                                     element={<BookingConfirmation />}
                                 />
                                 <Route
+                                    path="/student/booking-confirmation/review"
+                                    element={<BookingConfirmation isReview />}
+                                />
+                                <Route
                                     path="/student/bookings"
                                     element={<Bookings />}
                                 />

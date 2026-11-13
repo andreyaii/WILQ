@@ -44,7 +44,8 @@ export function StudentSidebar({
         path === "/student/bookings"
             ? route.includes("/studentgroup/bookings")
             : route === path ||
-              (path === "/student/slots" && route === "/student/booking-confirmation");
+              (path === "/student/slots" &&
+                  route.startsWith("/student/booking-confirmation"));
 
     const goTo = (path: Route) => {
         navigate(path);

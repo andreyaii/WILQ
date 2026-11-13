@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import BookingStepper from "../../components/BookingStepper.tsx";
 import { Icon } from "../../components/Icon.tsx";
 import {
     formatDate,
@@ -7,6 +8,7 @@ import {
     type ConsultationSlot,
     useStudentData,
 } from "../../context/StudentDataContext.tsx";
+import { isBookingDraft } from "./bookingWorkflow.ts";
 
 function slotHasPassed(slot: ConsultationSlot) {
     return new Date(slot.date + "T" + slot.startTime + ":00").getTime() <= Date.now();
@@ -14,6 +16,7 @@ function slotHasPassed(slot: ConsultationSlot) {
 
 export default function Slots() {
     const navigate = useNavigate();
+    const location = useLocation();
     const {
         slots,
         bookings,
@@ -22,6 +25,7 @@ export default function Slots() {
         getRemainingSeats,
         getSlot,
     } = useStudentData();
+    const bookingDraft = isBookingDraft(location.state) ? location.state : undefined;
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -88,6 +92,8 @@ export default function Slots() {
                 </button>
             </div>
 
+            <BookingStepper currentStep={1} />
+
             <div className="notice-banner">
                 <Icon name="info" size={17} />
                 <span>
@@ -99,7 +105,6 @@ export default function Slots() {
                 <section className="panel slot-picker">
                     <div className="slot-toolbar">
                         <div>
-                            <span className="eyebrow">Step 1 of 2</span>
                             <h2>Select a date</h2>
                         </div>
                         <div className="legend">
@@ -266,7 +271,7 @@ export default function Slots() {
                                 className="primary-button full"
                                 type="button"
                                 disabled={getRemainingSeats(selectedSlot) < 1 || slotHasPassed(selectedSlot)}
-                                onClick={() => navigate("/student/booking-confirmation")}
+                                onClick={() => navigate("/student/booking-confirmation", { state: bookingDraft })}
                             >
                                 Continue to booking
                                 <Icon name="arrow" size={17} />

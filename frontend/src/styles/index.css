@@ -705,6 +705,9 @@
     align-items: center;
     margin: -5px 0 24px;
 }
+.stepper-item {
+    display: contents;
+}
 .step {
     display: flex;
     align-items: center;
@@ -713,6 +716,18 @@
     white-space: nowrap;
     font-size: 10px;
     font-weight: 600;
+}
+.step-link {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+}
+.step-link:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 3px;
+    border-radius: 3px;
 }
 .step i {
     width: 23px;
@@ -740,14 +755,14 @@
     background: var(--green);
     border-color: var(--green);
 }
-.stepper > b {
+.stepper-item > b {
     flex: 1;
     height: 1px;
     background: #dce1e9;
     margin: 0 10px;
     min-width: 25px;
 }
-.stepper > b.done {
+.stepper-item > b.done {
     background: var(--green);
 }
 
