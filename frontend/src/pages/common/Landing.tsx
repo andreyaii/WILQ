@@ -106,7 +106,9 @@ function ArrowIcon() {
 
 export default function Landing({ onLogin }: LandingProps) {
     const { login, register, requestPasswordReset } = useStudentData();
-    const [mode, setMode] = useState<"login" | "signup" | "forgot-password">("login");
+    const [mode, setMode] = useState<"login" | "signup" | "forgot-password">(
+        "login",
+    );
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -142,7 +144,9 @@ export default function Landing({ onLogin }: LandingProps) {
             }
         } else if (mode === "signup") {
             if (password !== confirmPassword) {
-                setError("Passwords do not match. Please verify both password fields.");
+                setError(
+                    "Passwords do not match. Please verify both password fields.",
+                );
                 return;
             }
 
@@ -153,7 +157,9 @@ export default function Landing({ onLogin }: LandingProps) {
             });
 
             if (result.success) {
-                setSignupSuccess("Account created successfully! Please log in to continue.");
+                setSignupSuccess(
+                    "Account created successfully! Please log in to continue.",
+                );
                 setMode("login");
                 setPassword("");
                 setConfirmPassword("");
@@ -218,19 +224,28 @@ export default function Landing({ onLogin }: LandingProps) {
                     )}
 
                     {error && (
-                        <div className="landing-alert landing-alert-error" role="alert">
+                        <div
+                            className="landing-alert landing-alert-error"
+                            role="alert"
+                        >
                             <span>{error}</span>
                         </div>
                     )}
 
                     {signupSuccess && mode === "login" && (
-                        <div className="landing-alert landing-alert-success" role="status">
+                        <div
+                            className="landing-alert landing-alert-success"
+                            role="status"
+                        >
                             <span>{signupSuccess}</span>
                         </div>
                     )}
 
                     {forgotSuccess && mode === "forgot-password" ? (
-                        <div className="landing-alert landing-alert-success" role="status">
+                        <div
+                            className="landing-alert landing-alert-success"
+                            role="status"
+                        >
                             <p>{forgotSuccess}</p>
                             <button
                                 type="button"
@@ -244,7 +259,9 @@ export default function Landing({ onLogin }: LandingProps) {
                         <form onSubmit={submit}>
                             {mode === "signup" && (
                                 <>
-                                    <label htmlFor="landing-groupname">Group name *</label>
+                                    <label htmlFor="landing-groupname">
+                                        Group name *
+                                    </label>
                                     <div className="landing-input">
                                         <FieldIcon>
                                             <UsersIcon />
@@ -253,7 +270,9 @@ export default function Landing({ onLogin }: LandingProps) {
                                             id="landing-groupname"
                                             name="groupname"
                                             value={groupName}
-                                            onChange={(e) => setGroupName(e.target.value)}
+                                            onChange={(e) =>
+                                                setGroupName(e.target.value)
+                                            }
                                             placeholder="e.g. Group Alpha"
                                             required
                                         />
@@ -263,7 +282,9 @@ export default function Landing({ onLogin }: LandingProps) {
 
                             {mode !== "forgot-password" ? (
                                 <>
-                                    <label htmlFor="landing-username">Username *</label>
+                                    <label htmlFor="landing-username">
+                                        Username *
+                                    </label>
                                     <div className="landing-input">
                                         <FieldIcon>
                                             <UserIcon />
@@ -273,13 +294,17 @@ export default function Landing({ onLogin }: LandingProps) {
                                             name="username"
                                             autoComplete="username"
                                             value={username}
-                                            onChange={(e) => setUsername(e.target.value)}
+                                            onChange={(e) =>
+                                                setUsername(e.target.value)
+                                            }
                                             placeholder="Enter your username"
                                             required
                                         />
                                     </div>
 
-                                    <label htmlFor="landing-password">Password *</label>
+                                    <label htmlFor="landing-password">
+                                        Password *
+                                    </label>
                                     <div className="landing-input">
                                         <FieldIcon>
                                             <LockIcon />
@@ -287,19 +312,43 @@ export default function Landing({ onLogin }: LandingProps) {
                                         <input
                                             id="landing-password"
                                             name="password"
-                                            type={showPassword ? "text" : "password"}
-                                            autoComplete={mode === "login" ? "current-password" : "new-password"}
+                                            type={
+                                                showPassword
+                                                    ? "text"
+                                                    : "password"
+                                            }
+                                            autoComplete={
+                                                mode === "login"
+                                                    ? "current-password"
+                                                    : "new-password"
+                                            }
                                             value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            placeholder={mode === "login" ? "Enter your password" : "At least 6 characters"}
+                                            onChange={(e) =>
+                                                setPassword(e.target.value)
+                                            }
+                                            placeholder={
+                                                mode === "login"
+                                                    ? "Enter your password"
+                                                    : "At least 6 characters"
+                                            }
                                             required
-                                            minLength={mode === "signup" ? 6 : undefined}
+                                            minLength={
+                                                mode === "signup"
+                                                    ? 6
+                                                    : undefined
+                                            }
                                         />
                                         <button
                                             type="button"
                                             className="landing-password-toggle"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            aria-label={showPassword ? "Hide password" : "Show password"}
+                                            onClick={() =>
+                                                setShowPassword(!showPassword)
+                                            }
+                                            aria-label={
+                                                showPassword
+                                                    ? "Hide password"
+                                                    : "Show password"
+                                            }
                                         >
                                             <EyeIcon hidden={showPassword} />
                                         </button>
@@ -317,20 +366,40 @@ export default function Landing({ onLogin }: LandingProps) {
                                                 <input
                                                     id="landing-confirm-password"
                                                     name="confirm-password"
-                                                    type={showConfirmPassword ? "text" : "password"}
+                                                    type={
+                                                        showConfirmPassword
+                                                            ? "text"
+                                                            : "password"
+                                                    }
                                                     autoComplete="new-password"
                                                     value={confirmPassword}
-                                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                                    onChange={(e) =>
+                                                        setConfirmPassword(
+                                                            e.target.value,
+                                                        )
+                                                    }
                                                     placeholder="Confirm your password"
                                                     required
                                                 />
                                                 <button
                                                     type="button"
                                                     className="landing-password-toggle"
-                                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                                                    onClick={() =>
+                                                        setShowConfirmPassword(
+                                                            !showConfirmPassword,
+                                                        )
+                                                    }
+                                                    aria-label={
+                                                        showConfirmPassword
+                                                            ? "Hide password"
+                                                            : "Show password"
+                                                    }
                                                 >
-                                                    <EyeIcon hidden={showConfirmPassword} />
+                                                    <EyeIcon
+                                                        hidden={
+                                                            showConfirmPassword
+                                                        }
+                                                    />
                                                 </button>
                                             </div>
                                         </>
@@ -339,27 +408,41 @@ export default function Landing({ onLogin }: LandingProps) {
                                     {mode === "login" && (
                                         <div className="landing-options">
                                             <label className="landing-checkbox">
-                                                <input type="checkbox" defaultChecked />
+                                                <input
+                                                    type="checkbox"
+                                                    defaultChecked
+                                                />
                                                 <span>Remember me</span>
                                             </label>
                                             <button
                                                 type="button"
                                                 className="landing-link"
-                                                onClick={() => switchMode("forgot-password")}
+                                                onClick={() =>
+                                                    switchMode(
+                                                        "forgot-password",
+                                                    )
+                                                }
                                             >
                                                 Forgot password?
                                             </button>
                                         </div>
                                     )}
 
-                                    <button className="landing-submit" type="submit">
-                                        {mode === "login" ? "Log in" : "Create account"}
+                                    <button
+                                        className="landing-submit"
+                                        type="submit"
+                                    >
+                                        {mode === "login"
+                                            ? "Log in"
+                                            : "Create account"}
                                         <ArrowIcon />
                                     </button>
                                 </>
                             ) : (
                                 <>
-                                    <label htmlFor="landing-forgot-id">Username or Email *</label>
+                                    <label htmlFor="landing-forgot-id">
+                                        Username or Email *
+                                    </label>
                                     <div className="landing-input">
                                         <FieldIcon>
                                             <UserIcon />
@@ -368,13 +451,20 @@ export default function Landing({ onLogin }: LandingProps) {
                                             id="landing-forgot-id"
                                             name="forgot-id"
                                             value={forgotIdentifier}
-                                            onChange={(e) => setForgotIdentifier(e.target.value)}
+                                            onChange={(e) =>
+                                                setForgotIdentifier(
+                                                    e.target.value,
+                                                )
+                                            }
                                             placeholder="Enter your username or email"
                                             required
                                         />
                                     </div>
 
-                                    <button className="landing-submit" type="submit">
+                                    <button
+                                        className="landing-submit"
+                                        type="submit"
+                                    >
                                         Send reset instructions
                                         <ArrowIcon />
                                     </button>

@@ -1,10 +1,10 @@
 import {
     createContext,
+    type ReactNode,
     useContext,
     useEffect,
     useMemo,
     useState,
-    type ReactNode,
 } from "react";
 
 const STORAGE_KEY = "wilq.studentgroup-workspace.v2";
@@ -85,20 +85,25 @@ type StudentDataValue = WorkspaceState & {
     getSlot: (slotId: string) => ConsultationSlot | undefined;
     getBooking: (reference: string) => Booking | undefined;
     getRemainingSeats: (slot: ConsultationSlot) => number;
-    createBooking: (
-        slotId: string,
-        purpose: string,
-        notes: string,
-    ) => Booking;
+    createBooking: (slotId: string, purpose: string, notes: string) => Booking;
     cancelBooking: (reference: string) => void;
     updateProfile: (updates: Partial<StudentProfile>) => void;
     currentUser: UserAccount | null;
     isAuthenticated: boolean;
-    login: (usernameOrEmail: string, password: string) => { success: boolean; error?: string };
+    login: (
+        usernameOrEmail: string,
+        password: string,
+    ) => { success: boolean; error?: string };
     register: (data: RegisterData) => { success: boolean; error?: string };
     logout: () => void;
-    resetPassword: (currentPassword: string, newPassword: string) => { success: boolean; error?: string };
-    requestPasswordReset: (usernameOrEmail: string) => { success: boolean; message: string };
+    resetPassword: (
+        currentPassword: string,
+        newPassword: string,
+    ) => { success: boolean; error?: string };
+    requestPasswordReset: (usernameOrEmail: string) => {
+        success: boolean;
+        message: string;
+    };
 };
 
 const DEFAULT_ACCOUNTS: UserAccount[] = [
@@ -122,7 +127,9 @@ function readStoredAccounts(): UserAccount[] {
         const raw = window.localStorage.getItem(ACCOUNTS_STORAGE_KEY);
         if (!raw) return DEFAULT_ACCOUNTS;
         const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_ACCOUNTS;
+        return Array.isArray(parsed) && parsed.length > 0
+            ? parsed
+            : DEFAULT_ACCOUNTS;
     } catch {
         return DEFAULT_ACCOUNTS;
     }
@@ -137,7 +144,9 @@ function readStoredSession(accounts: UserAccount[]): UserAccount | null {
         }
         if (raw) {
             const found = accounts.find(
-                (a) => a.id === raw || a.username.toLowerCase() === raw.toLowerCase(),
+                (a) =>
+                    a.id === raw ||
+                    a.username.toLowerCase() === raw.toLowerCase(),
             );
             if (found) return found;
         }
@@ -161,7 +170,11 @@ function buildSampleSlots(): ConsultationSlot[] {
     const cursor = new Date();
     cursor.setHours(0, 0, 0, 0);
 
-    for (let attempts = 0; businessDays.length < 8 && attempts < 24; attempts += 1) {
+    for (
+        let attempts = 0;
+        businessDays.length < 8 && attempts < 24;
+        attempts += 1
+    ) {
         cursor.setDate(cursor.getDate() + 1);
         const weekday = cursor.getDay();
         if (weekday !== 0 && weekday !== 6) {
@@ -257,7 +270,9 @@ function readStoredState(): WorkspaceState {
         }
 
         const parsed = JSON.parse(raw) as Partial<WorkspaceState>;
-        const rawSlots = Array.isArray(parsed.slots) ? parsed.slots : fallback.slots;
+        const rawSlots = Array.isArray(parsed.slots)
+            ? parsed.slots
+            : fallback.slots;
         const hasNewSlots = rawSlots.some((s) => s.startTime === "07:30");
         const slots = hasNewSlots ? rawSlots : fallback.slots;
 
@@ -265,7 +280,10 @@ function readStoredState(): WorkspaceState {
             ...fallback.profile,
             ...(parsed.profile ?? {}),
             groupCode: parsed.profile?.groupCode || "2526-sem2-cs342-01",
-            section: parsed.profile?.section === "3A" ? "F1" : (parsed.profile?.section || "F1"),
+            section:
+                parsed.profile?.section === "3A"
+                    ? "F1"
+                    : parsed.profile?.section || "F1",
         };
 
         const loaded: WorkspaceState = {
@@ -333,7 +351,10 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         try {
-            window.localStorage.setItem(ACCOUNTS_STORAGE_KEY, JSON.stringify(accounts));
+            window.localStorage.setItem(
+                ACCOUNTS_STORAGE_KEY,
+                JSON.stringify(accounts),
+            );
         } catch {
             // Storage fallback
         }
@@ -342,7 +363,10 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         try {
             if (currentUser) {
-                window.localStorage.setItem(SESSION_STORAGE_KEY, currentUser.id);
+                window.localStorage.setItem(
+                    SESSION_STORAGE_KEY,
+                    currentUser.id,
+                );
             } else {
                 window.localStorage.setItem(SESSION_STORAGE_KEY, "logged_out");
             }
@@ -416,24 +440,34 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
         ) => {
             const slot = getSlot(slotId);
             if (!slot) {
-                throw new Error("That consultation slot could not be found. Please choose another slot.");
+                throw new Error(
+                    "That consultation slot could not be found. Please choose another slot.",
+                );
             }
 
             const startsAt = new Date(slot.date + "T" + slot.startTime + ":00");
             if (startsAt.getTime() <= Date.now()) {
-                throw new Error("That consultation time has already passed. Please choose a future slot.");
+                throw new Error(
+                    "That consultation time has already passed. Please choose a future slot.",
+                );
             }
 
             if (getRemainingSeats(slot) < 1) {
-                throw new Error("That slot is full. Please choose another available time.");
+                throw new Error(
+                    "That slot is full. Please choose another available time.",
+                );
             }
 
             const activeBooking = state.bookings.find(isActiveBooking);
             if (activeBooking) {
                 if (activeBooking.slotId === slotId) {
-                    throw new Error("Your group already has an active booking for this slot.");
+                    throw new Error(
+                        "Your group already has an active booking for this slot.",
+                    );
                 }
-                throw new Error("Your group already has an active booking. Review or cancel it before choosing another time.");
+                throw new Error(
+                    "Your group already has an active booking. Review or cancel it before choosing another time.",
+                );
             }
 
             const year = new Date().getFullYear();
@@ -462,7 +496,9 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
         const cancelBooking = (reference: string) => {
             const booking = getBooking(reference);
             if (!booking || !["Pending", "Approved"].includes(booking.status)) {
-                throw new Error("Only pending or approved bookings can be cancelled.");
+                throw new Error(
+                    "Only pending or approved bookings can be cancelled.",
+                );
             }
 
             const timestamp = new Date().toISOString();
@@ -488,12 +524,15 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
                     groupName: updates.groupName ?? currentUser.groupName,
                     program: updates.program ?? currentUser.program,
                     section: updates.section ?? currentUser.section,
-                    representative: updates.representative ?? currentUser.representative,
+                    representative:
+                        updates.representative ?? currentUser.representative,
                     email: updates.email ?? currentUser.email,
                 };
                 setCurrentUser(updatedUser);
                 setAccounts((curr) =>
-                    curr.map((acc) => (acc.id === currentUser.id ? updatedUser : acc)),
+                    curr.map((acc) =>
+                        acc.id === currentUser.id ? updatedUser : acc,
+                    ),
                 );
             }
         };
@@ -504,7 +543,8 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
 
             const found = accounts.find(
                 (acc) =>
-                    (acc.username.toLowerCase() === cleanId || acc.email.toLowerCase() === cleanId) &&
+                    (acc.username.toLowerCase() === cleanId ||
+                        acc.email.toLowerCase() === cleanId) &&
                     acc.password === cleanPass,
             );
 
@@ -524,7 +564,8 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
                     groupCode: found.groupCode,
                     program: found.program,
                     section: found.section,
-                    representative: found.representative || current.profile.representative,
+                    representative:
+                        found.representative || current.profile.representative,
                     email: found.email,
                 },
             }));
@@ -538,28 +579,46 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
             const cleanGroup = data.groupName.trim();
 
             if (!cleanUser || !cleanPass || !cleanGroup) {
-                return { success: false, error: "Please provide a group name, username, and password." };
+                return {
+                    success: false,
+                    error: "Please provide a group name, username, and password.",
+                };
             }
 
             if (cleanUser.length < 3) {
-                return { success: false, error: "Username must be at least 3 characters." };
+                return {
+                    success: false,
+                    error: "Username must be at least 3 characters.",
+                };
             }
 
             if (cleanPass.length < 6) {
-                return { success: false, error: "Password must be at least 6 characters long." };
+                return {
+                    success: false,
+                    error: "Password must be at least 6 characters long.",
+                };
             }
 
             const exists = accounts.some(
                 (acc) => acc.username.toLowerCase() === cleanUser.toLowerCase(),
             );
             if (exists) {
-                return { success: false, error: "That username is already taken. Please choose another." };
+                return {
+                    success: false,
+                    error: "That username is already taken. Please choose another.",
+                };
             }
 
-            const email = data.email?.trim() || `${cleanUser.toLowerCase()}@cit.edu`;
+            const email =
+                data.email?.trim() || `${cleanUser.toLowerCase()}@cit.edu`;
             const program = data.program?.trim() || "BSIT";
             const section = data.section?.trim() || "F1";
-            const groupCode = `2526-sem2-${cleanUser.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5) || "grp"}-01`;
+            const groupCode = `2526-sem2-${
+                cleanUser
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]/g, "")
+                    .slice(0, 5) || "grp"
+            }-01`;
 
             const newAccount: UserAccount = {
                 id: "user-" + Date.now(),
@@ -586,7 +645,9 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
                     groupCode: newAccount.groupCode,
                     program: newAccount.program,
                     section: newAccount.section,
-                    representative: newAccount.representative || current.profile.representative,
+                    representative:
+                        newAccount.representative ||
+                        current.profile.representative,
                     email: newAccount.email,
                 },
             }));
@@ -603,21 +664,36 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
             }
         };
 
-        const resetPassword = (currentPassword: string, newPassword: string) => {
+        const resetPassword = (
+            currentPassword: string,
+            newPassword: string,
+        ) => {
             if (!currentUser) {
-                return { success: false, error: "You must be signed in to change your password." };
+                return {
+                    success: false,
+                    error: "You must be signed in to change your password.",
+                };
             }
 
             if (currentUser.password !== currentPassword.trim()) {
-                return { success: false, error: "Current password does not match our records." };
+                return {
+                    success: false,
+                    error: "Current password does not match our records.",
+                };
             }
 
             if (newPassword.trim().length < 6) {
-                return { success: false, error: "New password must be at least 6 characters long." };
+                return {
+                    success: false,
+                    error: "New password must be at least 6 characters long.",
+                };
             }
 
             if (currentPassword.trim() === newPassword.trim()) {
-                return { success: false, error: "New password must be different from current password." };
+                return {
+                    success: false,
+                    error: "New password must be different from current password.",
+                };
             }
 
             const updatedUser: UserAccount = {
@@ -626,7 +702,9 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
             };
 
             setAccounts((curr) =>
-                curr.map((acc) => (acc.id === currentUser.id ? updatedUser : acc)),
+                curr.map((acc) =>
+                    acc.id === currentUser.id ? updatedUser : acc,
+                ),
             );
             setCurrentUser(updatedUser);
 
@@ -636,7 +714,9 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
         const requestPasswordReset = (usernameOrEmail: string) => {
             const cleanId = usernameOrEmail.trim().toLowerCase();
             const found = accounts.find(
-                (acc) => acc.username.toLowerCase() === cleanId || acc.email.toLowerCase() === cleanId,
+                (acc) =>
+                    acc.username.toLowerCase() === cleanId ||
+                    acc.email.toLowerCase() === cleanId,
             );
 
             if (found) {
@@ -682,7 +762,9 @@ export function StudentDataProvider({ children }: { children: ReactNode }) {
 export function useStudentData() {
     const context = useContext(StudentDataContext);
     if (!context) {
-        throw new Error("useStudentData must be used inside StudentDataProvider.");
+        throw new Error(
+            "useStudentData must be used inside StudentDataProvider.",
+        );
     }
     return context;
 }

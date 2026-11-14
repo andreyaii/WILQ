@@ -8,7 +8,10 @@ type BookingStepperProps = {
 
 const steps = ["Select a slot", "Booking details", "Confirmation"] as const;
 
-export default function BookingStepper({ currentStep, onStepClick }: BookingStepperProps) {
+export default function BookingStepper({
+    currentStep,
+    onStepClick,
+}: BookingStepperProps) {
     const navigate = useNavigate();
 
     return (
@@ -18,13 +21,16 @@ export default function BookingStepper({ currentStep, onStepClick }: BookingStep
                 const isDone = step < currentStep;
                 const isActive = step === currentStep;
                 const connectorDone = index < currentStep;
-                const content = isDone
-                    ? <Icon name="check" size={13} />
-                    : step;
+                const content = isDone ? <Icon name="check" size={13} /> : step;
 
                 return (
                     <span className="stepper-item" key={label}>
-                        {index > 0 && <b className={connectorDone ? "done" : ""} aria-hidden="true" />}
+                        {index > 0 && (
+                            <b
+                                className={connectorDone ? "done" : ""}
+                                aria-hidden="true"
+                            />
+                        )}
                         {isDone ? (
                             <button
                                 className="step done step-link"
@@ -46,7 +52,11 @@ export default function BookingStepper({ currentStep, onStepClick }: BookingStep
                             </button>
                         ) : (
                             <span
-                                className={"step" + (isDone ? " done" : "") + (isActive ? " active" : "")}
+                                className={
+                                    "step" +
+                                    (isDone ? " done" : "") +
+                                    (isActive ? " active" : "")
+                                }
                                 aria-current={isActive ? "step" : undefined}
                             >
                                 <i>{content}</i>

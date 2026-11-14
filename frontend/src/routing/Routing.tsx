@@ -6,12 +6,12 @@ import {
     StudentTopbar,
 } from "../components/Navbar";
 import { StudentDataProvider } from "../context/StudentDataContext";
-import BookingConfirmation from "../pages/studentgroup/BookingConfirmation";
-import BookingDetails from "../pages/studentgroup/BookingDetails";
 import Bookings from "../pages/common/Bookings";
 import Dashboard from "../pages/common/Dashboard";
 import Landing from "../pages/common/Landing";
 import Profile from "../pages/common/Profile";
+import BookingConfirmation from "../pages/studentgroup/BookingConfirmation";
+import BookingDetails from "../pages/studentgroup/BookingDetails";
 import Slots from "../pages/studentgroup/Slots";
 import Support from "../pages/studentgroup/Support";
 import ScrollToTop from "./ScrollToTop";
