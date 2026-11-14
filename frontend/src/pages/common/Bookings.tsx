@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
-import { Icon } from "../components/Icon";
+import { Icon } from "../../components/Icon.tsx";
 import {
     formatDate,
     formatTime,
     type BookingStatus,
     useStudentData,
-} from "../context/StudentDataContext";
+} from "../../context/StudentDataContext.tsx";
 
 type FilterStatus = "All" | "Pending" | "Approved" | "Completed" | "Cancelled";
 const PAGE_SIZE = 6;

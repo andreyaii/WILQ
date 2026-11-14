@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { Icon } from "../components/Icon";
+import { Icon } from "../../components/Icon.tsx";
 import {
     formatDate,
     formatTime,
     type BookingStatus,
     useStudentData,
-} from "../context/StudentDataContext";
+} from "../../context/StudentDataContext.tsx";
 
 function StatusBadge({ status }: { status: BookingStatus }) {
     return <span className={"status status-" + status.toLowerCase()}><i />{status}</span>;

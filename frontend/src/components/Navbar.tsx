@@ -37,17 +37,24 @@ export function StudentSidebar({
     mobileOpen,
     onClose,
 }: SidebarProps) {
-    const { profile } = useStudentData();
+    const { profile, logout } = useStudentData();
     const groupName = profile.groupName.trim() || "Student group";
     const groupSubtitle = [profile.program, profile.section].filter(Boolean).join(" ") || "Group workspace";
     const isActive = (path: Route) =>
         path === "/student/bookings"
-            ? route.includes("/student/bookings")
+            ? route.includes("/studentgroup/bookings")
             : route === path ||
-              (path === "/student/slots" && route === "/student/booking-confirmation");
+              (path === "/student/slots" &&
+                  route.startsWith("/student/booking-confirmation"));
 
     const goTo = (path: Route) => {
         navigate(path);
+        onClose();
+    };
+
+    const handleLogout = () => {
+        logout();
+        navigate("/login");
         onClose();
     };
 
@@ -85,7 +92,7 @@ export function StudentSidebar({
                 <div className="side-profile">
                     <div className="avatar">{getInitials(groupName)}</div>
                     <div><strong>{groupName}</strong><span>{groupSubtitle}</span></div>
-                    <button type="button" aria-label="Log out" title="Return to login" onClick={() => navigate("/")}>
+                    <button type="button" aria-label="Log out" title="Log out" onClick={handleLogout}>
                         <Icon name="logout" size={18} />
                     </button>
                 </div>
